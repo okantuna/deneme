@@ -4,20 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>R&D L2 Planning Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background: #0f1117;
-    color: #e0e0e0;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    background: #f5f5f4;
+    color: #1c1917;
     min-height: 100vh;
+    font-size: 14px;
   }
 
+  /* ── Header ── */
   header {
-    background: linear-gradient(135deg, #1a1f2e, #252d42);
-    padding: 20px 30px;
-    border-bottom: 2px solid #2d3a5c;
+    background: #fff;
+    padding: 16px 32px;
+    border-bottom: 1px solid #e7e5e4;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -25,89 +29,172 @@
     gap: 12px;
   }
 
-  header h1 {
-    font-size: 1.5rem;
+  .header-left { display: flex; align-items: center; gap: 12px; }
+
+  .header-logo {
+    width: 32px; height: 32px;
+    background: #1c1917;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
     font-weight: 700;
-    color: #7eb3ff;
-    letter-spacing: 0.5px;
+    font-size: 13px;
+    letter-spacing: -0.5px;
+    flex-shrink: 0;
+  }
+
+  header h1 {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1c1917;
+    letter-spacing: -0.2px;
   }
 
   .header-meta {
-    font-size: 0.8rem;
-    color: #6b7c99;
+    font-size: 12px;
+    color: #a8a29e;
+    margin-top: 1px;
   }
 
+  /* ── Stats ── */
+  .stats-bar {
+    display: flex;
+    gap: 0;
+    background: #fff;
+    border-bottom: 1px solid #e7e5e4;
+    padding: 0 32px;
+    overflow-x: auto;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    padding: 12px 24px 12px 0;
+    margin-right: 24px;
+    border-right: 1px solid #e7e5e4;
+    min-width: 90px;
+  }
+
+  .stat:last-child { border-right: none; }
+
+  .stat-value {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1c1917;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: #a8a29e;
+    margin-top: 3px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  .stat-value.green  { color: #16a34a; }
+  .stat-value.red    { color: #dc2626; }
+  .stat-value.amber  { color: #d97706; }
+
+  /* ── Controls ── */
   .controls {
-    padding: 16px 30px;
-    background: #13182a;
-    border-bottom: 1px solid #1e2840;
+    padding: 12px 32px;
+    background: #fff;
+    border-bottom: 1px solid #e7e5e4;
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
     flex-wrap: wrap;
+  }
+
+  .search-wrap {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .search-wrap svg {
+    position: absolute;
+    left: 10px; top: 50%;
+    transform: translateY(-50%);
+    color: #a8a29e;
+    pointer-events: none;
   }
 
   .controls input {
-    background: #1a2035;
-    border: 1px solid #2d3a5c;
-    color: #e0e0e0;
-    padding: 8px 14px;
+    background: #fafaf9;
+    border: 1px solid #e7e5e4;
+    color: #1c1917;
+    padding: 7px 12px 7px 32px;
     border-radius: 6px;
-    font-size: 0.9rem;
-    width: 260px;
+    font-size: 13px;
+    width: 220px;
     outline: none;
-    transition: border-color 0.2s;
+    font-family: inherit;
+    transition: border-color 0.15s, box-shadow 0.15s;
   }
 
-  .controls input:focus { border-color: #7eb3ff; }
+  .controls input:focus {
+    border-color: #a8a29e;
+    box-shadow: 0 0 0 3px rgba(168,162,158,0.15);
+  }
 
   .legend {
     display: flex;
-    gap: 14px;
+    gap: 16px;
     flex-wrap: wrap;
     margin-left: auto;
+    align-items: center;
   }
 
   .legend-item {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 0.78rem;
-    color: #8a9ab8;
+    gap: 5px;
+    font-size: 12px;
+    color: #78716c;
+    font-weight: 500;
   }
 
   .legend-dot {
-    width: 12px; height: 12px;
-    border-radius: 3px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
   }
 
-  .dot-done    { background: #22c55e; }
-  .dot-current { background: #f59e0b; }
-  .dot-future  { background: #3b82f6; }
-  .dot-overdue { background: #ef4444; }
-  .dot-empty   { background: #2a3352; border: 1px solid #3a4a6a; }
+  .dot-done    { background: #16a34a; }
+  .dot-current { background: #d97706; }
+  .dot-future  { background: #2563eb; }
+  .dot-overdue { background: #dc2626; }
+  .dot-empty   { background: #d6d3d1; }
 
+  /* ── Table ── */
   .table-wrapper {
-    padding: 20px 30px;
+    padding: 24px 32px;
     overflow-x: auto;
   }
 
   table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     min-width: 900px;
+    background: #fff;
+    border: 1px solid #e7e5e4;
+    border-radius: 10px;
+    overflow: hidden;
   }
 
   thead th {
-    background: #1a2035;
-    color: #7eb3ff;
-    font-size: 0.78rem;
+    background: #fafaf9;
+    color: #78716c;
+    font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.8px;
-    padding: 12px 10px;
+    letter-spacing: 0.6px;
+    padding: 10px 12px;
     text-align: center;
-    border-bottom: 2px solid #2d3a5c;
+    border-bottom: 1px solid #e7e5e4;
     position: sticky;
     top: 0;
     z-index: 10;
@@ -116,121 +203,106 @@
 
   thead th:first-child {
     text-align: left;
-    padding-left: 16px;
-    min-width: 180px;
+    padding-left: 20px;
+    min-width: 200px;
   }
 
   tbody tr {
-    transition: background 0.15s;
-    border-bottom: 1px solid #1a2035;
+    transition: background 0.1s;
+    border-bottom: 1px solid #f5f5f4;
   }
 
-  tbody tr:hover { background: #161d30; }
-
-  tbody tr:nth-child(even) { background: #111624; }
-  tbody tr:nth-child(even):hover { background: #161d30; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #fafaf9; }
 
   td {
-    padding: 10px;
+    padding: 10px 12px;
     text-align: center;
-    font-size: 0.82rem;
     vertical-align: middle;
+    border-bottom: 1px solid #f5f5f4;
   }
+
+  tbody tr:last-child td { border-bottom: none; }
 
   td:first-child {
     text-align: left;
-    padding-left: 16px;
+    padding-left: 20px;
     font-weight: 500;
-    color: #c8d8f0;
-    font-size: 0.87rem;
+    color: #1c1917;
+    font-size: 13.5px;
   }
 
+  /* ── Project name cell ── */
   .project-name-cell {
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    color: #c8d8f0;
-    transition: color 0.15s;
+    color: #1c1917;
+    transition: color 0.12s;
   }
 
-  .project-name-cell:hover { color: #7eb3ff; }
+  .project-name-cell:hover { color: #2563eb; }
 
   .project-name-cell .link-icon {
-    font-size: 0.72rem;
+    font-size: 11px;
+    color: #a8a29e;
     opacity: 0;
-    transition: opacity 0.15s;
+    transition: opacity 0.12s;
+    flex-shrink: 0;
   }
 
   .project-name-cell:hover .link-icon { opacity: 1; }
+  .project-name-cell.has-link .link-icon { color: #2563eb; }
 
+  /* ── Milestone chips ── */
   .milestone-cell {
     cursor: pointer;
-    border-radius: 6px;
-    padding: 6px 8px;
+    border-radius: 5px;
+    padding: 4px 10px;
     display: inline-block;
-    min-width: 62px;
-    font-weight: 600;
-    font-size: 0.8rem;
-    transition: transform 0.1s, box-shadow 0.1s;
-    letter-spacing: 0.2px;
+    min-width: 58px;
+    font-weight: 500;
+    font-size: 12px;
+    transition: filter 0.12s;
+    letter-spacing: 0.1px;
+    border: 1px solid transparent;
   }
 
-  .milestone-cell:hover {
-    transform: scale(1.05);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.4);
-  }
+  .milestone-cell:hover { filter: brightness(0.94); }
 
-  .status-done    { background: #14532d; color: #4ade80; border: 1px solid #22c55e55; }
-  .status-current { background: #451a03; color: #fcd34d; border: 1px solid #f59e0b55; }
-  .status-future  { background: #1e3a5f; color: #93c5fd; border: 1px solid #3b82f655; }
-  .status-overdue { background: #450a0a; color: #fca5a5; border: 1px solid #ef444455; }
-  .status-empty   { background: #1a2035; color: #3a4a6a; border: 1px solid #2a3352; cursor: default; }
+  .status-done    { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
+  .status-current { background: #fffbeb; color: #b45309; border-color: #fde68a; }
+  .status-future  { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+  .status-overdue { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }
+  .status-empty   { background: #fafaf9; color: #c4b5a5; border-color: #e7e5e4; cursor: default; }
 
+  /* ── Loading ── */
   .loading {
     text-align: center;
-    padding: 60px;
-    color: #4a5a7a;
-    font-size: 1rem;
+    padding: 80px;
+    color: #a8a29e;
+    font-size: 13px;
   }
 
   .spinner {
     display: inline-block;
-    width: 32px; height: 32px;
-    border: 3px solid #2d3a5c;
-    border-top-color: #7eb3ff;
+    width: 24px; height: 24px;
+    border: 2px solid #e7e5e4;
+    border-top-color: #78716c;
     border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin-bottom: 14px;
+    animation: spin 0.7s linear infinite;
+    margin-bottom: 12px;
   }
 
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .stats-bar {
-    display: flex;
-    gap: 20px;
-    padding: 12px 30px;
-    background: #0f1420;
-    border-bottom: 1px solid #1e2840;
-    flex-wrap: wrap;
-  }
-
-  .stat {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.82rem;
-    color: #6b7c99;
-  }
-
-  .stat strong { color: #c8d8f0; font-size: 1rem; }
-
-  /* Edit modal */
+  /* ── Modal ── */
   .modal-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.7);
+    background: rgba(28,25,23,0.4);
     z-index: 100;
     align-items: center;
     justify-content: center;
@@ -239,98 +311,144 @@
   .modal-overlay.show { display: flex; }
 
   .modal {
-    background: #1a2035;
-    border: 1px solid #2d3a5c;
+    background: #fff;
+    border: 1px solid #e7e5e4;
     border-radius: 12px;
-    padding: 28px;
-    min-width: 340px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    padding: 24px;
+    min-width: 360px;
+    box-shadow: 0 8px 32px rgba(28,25,23,0.12), 0 2px 8px rgba(28,25,23,0.06);
   }
 
-  .modal h3 { color: #7eb3ff; margin-bottom: 6px; font-size: 1rem; }
-  .modal p  { color: #6b7c99; font-size: 0.82rem; margin-bottom: 20px; }
+  .modal h3 {
+    color: #1c1917;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .modal p {
+    color: #78716c;
+    font-size: 12.5px;
+    margin-bottom: 18px;
+  }
+
+  .modal label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: #57534e;
+    margin-bottom: 5px;
+    margin-top: 14px;
+  }
+
+  .modal label:first-of-type { margin-top: 0; }
 
   .modal input {
     width: 100%;
-    background: #0f1420;
-    border: 1px solid #2d3a5c;
-    color: #e0e0e0;
-    padding: 10px 14px;
+    background: #fafaf9;
+    border: 1px solid #e7e5e4;
+    color: #1c1917;
+    padding: 8px 12px;
     border-radius: 6px;
-    font-size: 0.9rem;
+    font-size: 13.5px;
     outline: none;
-    margin-bottom: 16px;
+    font-family: inherit;
+    margin-bottom: 4px;
+    transition: border-color 0.15s, box-shadow 0.15s;
   }
 
-  .modal input:focus { border-color: #7eb3ff; }
+  .modal input:focus {
+    border-color: #a8a29e;
+    box-shadow: 0 0 0 3px rgba(168,162,158,0.15);
+  }
 
-  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+  .modal-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
 
   .btn {
-    padding: 8px 20px;
+    padding: 7px 16px;
     border-radius: 6px;
-    font-size: 0.85rem;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 500;
     cursor: pointer;
-    border: none;
-    transition: opacity 0.15s;
+    border: 1px solid transparent;
+    font-family: inherit;
+    transition: background 0.12s, box-shadow 0.12s;
+    line-height: 1.4;
   }
 
-  .btn:hover { opacity: 0.85; }
-  .btn-primary { background: #3b82f6; color: #fff; }
-  .btn-secondary { background: #2a3352; color: #8a9ab8; }
-  .btn-done { background: #22c55e; color: #fff; }
+  .btn-primary   { background: #1c1917; color: #fff; border-color: #1c1917; }
+  .btn-primary:hover { background: #292524; }
+  .btn-secondary { background: #fff; color: #57534e; border-color: #e7e5e4; }
+  .btn-secondary:hover { background: #fafaf9; }
+  .btn-done      { background: #16a34a; color: #fff; border-color: #16a34a; }
+  .btn-done:hover { background: #15803d; }
+  .btn-link      { background: #2563eb; color: #fff; border-color: #2563eb; }
+  .btn-link:hover { background: #1d4ed8; }
 
+  /* ── Toast ── */
   .toast {
     position: fixed;
     bottom: 24px;
     right: 24px;
-    background: #22c55e;
+    background: #1c1917;
     color: #fff;
-    padding: 10px 20px;
+    padding: 10px 16px;
     border-radius: 8px;
-    font-size: 0.85rem;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 500;
     opacity: 0;
-    transform: translateY(10px);
-    transition: all 0.3s;
+    transform: translateY(6px);
+    transition: all 0.2s;
     z-index: 200;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
 
   .toast.show { opacity: 1; transform: translateY(0); }
-  .toast.error { background: #ef4444; }
-
-  .modal label {
-    display: block;
-    font-size: 0.78rem;
-    color: #6b7c99;
-    margin-bottom: 5px;
-    margin-top: 12px;
-  }
-  .modal label:first-of-type { margin-top: 0; }
-
-  .btn-link { background: #6366f1; color: #fff; }
+  .toast.error { background: #dc2626; }
 </style>
 </head>
 <body>
 
 <header>
-  <div>
-    <h1>R&amp;D L2 Planning Dashboard</h1>
-    <div class="header-meta" id="lastUpdated">Yükleniyor...</div>
+  <div class="header-left">
+    <div class="header-logo">R&amp;D</div>
+    <div>
+      <h1>L2 Planning</h1>
+      <div class="header-meta" id="lastUpdated">Yükleniyor...</div>
+    </div>
   </div>
 </header>
 
 <div class="stats-bar" id="statsBar" style="display:none">
-  <div class="stat"><strong id="statTotal">0</strong> Proje</div>
-  <div class="stat"><strong id="statDone" style="color:#4ade80">0</strong> Tamamlanan Milestone</div>
-  <div class="stat"><strong id="statOverdue" style="color:#fca5a5">0</strong> Gecikmiş</div>
-  <div class="stat"><strong id="statCurrentWeek" style="color:#fcd34d">0</strong> Bu Hafta</div>
+  <div class="stat">
+    <div class="stat-value" id="statTotal">0</div>
+    <div class="stat-label">Proje</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value green" id="statDone">0</div>
+    <div class="stat-label">Tamamlandı</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value red" id="statOverdue">0</div>
+    <div class="stat-label">Gecikmiş</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value amber" id="statCurrentWeek">0</div>
+    <div class="stat-label">Bu Hafta</div>
+  </div>
 </div>
 
 <div class="controls">
-  <input type="text" id="searchInput" placeholder="🔍  Proje ara..." oninput="filterProjects()" />
-  <button class="btn btn-primary" onclick="openAddProjectModal()" style="white-space:nowrap">+ Yeni Proje</button>
+  <div class="search-wrap">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="searchInput" placeholder="Proje ara..." oninput="filterProjects()" />
+  </div>
+  <button class="btn btn-primary" onclick="openAddProjectModal()">+ Yeni Proje</button>
   <div class="legend">
     <div class="legend-item"><div class="legend-dot dot-done"></div>Tamamlandı</div>
     <div class="legend-item"><div class="legend-dot dot-current"></div>Bu Hafta</div>
@@ -434,8 +552,9 @@ function renderTable(projects, milestones, currentWeek) {
   // Rows
   body.innerHTML = projects.map(p => {
     const safeName = htmlEnc(p.name);
-    const linkIcon = p.url ? `<span class="link-icon">↗</span>` : `<span class="link-icon" style="opacity:0.3">+link</span>`;
-    const nameCell = `<span class="project-name-cell" data-project="${htmlEnc(p.name)}" data-url="${htmlEnc(p.url || '')}" title="Linki düzenle">${safeName}${linkIcon}</span>`;
+    const linkIcon = p.url ? `<span class="link-icon">↗</span>` : `<span class="link-icon">+ link</span>`;
+    const hasLink = p.url ? " has-link" : "";
+    const nameCell = `<span class="project-name-cell${hasLink}" data-project="${htmlEnc(p.name)}" data-url="${htmlEnc(p.url || '')}" title="Linki düzenle">${safeName}${linkIcon}</span>`;
     let row = `<tr><td>${nameCell}</td>`;
     milestones.forEach(m => {
       const val = p.milestones[m] || "";
