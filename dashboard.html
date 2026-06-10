@@ -529,7 +529,7 @@ function renderTable() {
 function buildProjectRow(p, milestones, currentWeek, expanded) {
   const safeName = enc(p.name);
   const linkClass = p.url ? " has-link" : "";
-  const linkLabel = p.url ? "↗ Link" : "+ Link";
+  const linkLabel = p.url ? "↗ Technic RFQ" : "+ Technic RFQ";
   const expClass  = expanded ? " expanded" : "";
 
   let row = `<tr class="project-row${expClass}" data-project="${enc(p.name)}">
@@ -575,7 +575,11 @@ function handleBodyClick(e) {
   const linkBtn = e.target.closest(".project-link-btn");
   if (linkBtn) {
     e.stopPropagation();
-    openLinkModal(linkBtn.dataset.project, linkBtn.dataset.url);
+    if (linkBtn.dataset.url) {
+      window.open(linkBtn.dataset.url, "_blank");
+    } else {
+      openLinkModal(linkBtn.dataset.project, "");
+    }
     return;
   }
 
