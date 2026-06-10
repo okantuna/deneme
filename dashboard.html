@@ -395,19 +395,27 @@ function renderTable(projects, milestones, currentWeek) {
 
   // Rows
   body.innerHTML = projects.map(p => {
+    const safeName = htmlEnc(p.name);
     const nameCell = p.url
-      ? `<a class="project-link" href="${esc(p.url)}" target="_blank">${esc(p.name)}<span class="link-icon">↗</span></a>`
-      : esc(p.name);
-    let row = `<tr data-project="${esc(p.name)}"><td>${nameCell}</td>`;
+      ? `<a class="project-link" href="${htmlEnc(p.url)}" target="_blank">${safeName}<span class="link-icon">↗</span></a>`
+      : safeName;
+    let row = `<tr><td>${nameCell}</td>`;
     milestones.forEach(m => {
       const val = p.milestones[m] || "";
       const cls = getCellClass(val, currentWeek);
       const label = val || "—";
-      row += `<td><span class="milestone-cell ${cls}" onclick="openModal('${esc(p.name)}','${esc(m)}','${esc(val)}')">${label}</span></td>`;
+      row += `<td><span class="milestone-cell ${cls}" data-project="${htmlEnc(p.name)}" data-milestone="${htmlEnc(m)}" data-val="${htmlEnc(val)}">${label}</span></td>`;
     });
     row += "</tr>";
     return row;
   }).join("");
+
+  // Event delegation — tek listener, tüm milestone hücrelerini yakalar
+  body.addEventListener("click", e => {
+    const cell = e.target.closest(".milestone-cell");
+    if (!cell) return;
+    openModal(cell.dataset.project, cell.dataset.milestone, cell.dataset.val);
+  });
 }
 
 function getCellClass(val, currentWeek) {
@@ -445,7 +453,7 @@ function renderStats(projects, milestones, currentWeek) {
 function filterProjects() {
   const q = document.getElementById("searchInput").value.toLowerCase();
   document.querySelectorAll("#tableBody tr").forEach(row => {
-    const name = row.dataset.project.toLowerCase();
+    const name = row.querySelector("td").textContent.toLowerCase();
     row.style.display = name.includes(q) ? "" : "none";
   });
 }
@@ -490,8 +498,12 @@ function showToast(msg, isError) {
   setTimeout(() => t.className = "toast", 2800);
 }
 
-function esc(s) {
-  return String(s).replace(/'/g, "\\'").replace(/"/g, "&quot;");
+function htmlEnc(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
 }
 
 // Close modal on overlay click
