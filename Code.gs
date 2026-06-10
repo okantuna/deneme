@@ -70,7 +70,59 @@ function openDashboard() {
   SpreadsheetApp.getUi().showModalDialog(html, "R&D L2 Planning Dashboard");
 }
 
-// Update a cell value from the dashboard
+// Yeni proje ekle
+function addProject(projectName, projectUrl) {
+  projectName = String(projectName).trim();
+  if (!projectName) throw new Error("Proje adı boş olamaz");
+
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(SHEET_NAME);
+  const data = sheet.getDataRange().getValues();
+
+  // Aynı isimde proje var mı?
+  const exists = data.slice(1).some(r => String(r[0]).trim().toLowerCase() === projectName.toLowerCase());
+  if (exists) throw new Error("Bu isimde bir proje zaten mevcut: " + projectName);
+
+  // Yeni satır ekle
+  const newRow = sheet.getLastRow() + 1;
+  const cell = sheet.getRange(newRow, 1);
+
+  if (projectUrl) {
+    const richText = SpreadsheetApp.newRichTextValue()
+      .setText(projectName)
+      .setLinkUrl(projectUrl)
+      .build();
+    cell.setRichTextValue(richText);
+  } else {
+    cell.setValue(projectName);
+  }
+
+  Logger.log("addProject: '%s' eklendi, satır %d", projectName, newRow);
+  return { success: true };
+}
+
+// Mevcut projenin linkini güncelle
+function updateProjectLink(projectName, projectUrl) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(SHEET_NAME);
+  const data = sheet.getDataRange().getValues();
+
+  const projectNorm = String(projectName).trim().toLowerCase();
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][0]).trim().toLowerCase() === projectNorm) {
+      const cell = sheet.getRange(i + 1, 1);
+      const richText = SpreadsheetApp.newRichTextValue()
+        .setText(String(data[i][0]).trim())
+        .setLinkUrl(projectUrl || null)
+        .build();
+      cell.setRichTextValue(richText);
+      Logger.log("updateProjectLink: '%s' linki güncellendi", projectName);
+      return { success: true };
+    }
+  }
+  throw new Error("Proje bulunamadı: " + projectName);
+}
+
 function updateCell(projectName, milestone, value) {
   Logger.log("updateCell called: project=%s, milestone=%s, value=%s", projectName, milestone, value);
 

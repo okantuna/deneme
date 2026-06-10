@@ -145,27 +145,24 @@
     font-size: 0.87rem;
   }
 
-  .project-link {
-    color: #c8d8f0;
-    text-decoration: none;
+  .project-name-cell {
+    cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    color: #c8d8f0;
     transition: color 0.15s;
   }
 
-  .project-link:hover {
-    color: #7eb3ff;
-    text-decoration: underline;
-  }
+  .project-name-cell:hover { color: #7eb3ff; }
 
-  .project-link .link-icon {
+  .project-name-cell .link-icon {
+    font-size: 0.72rem;
     opacity: 0;
-    font-size: 0.75rem;
     transition: opacity 0.15s;
   }
 
-  td:first-child:hover .link-icon { opacity: 1; }
+  .project-name-cell:hover .link-icon { opacity: 1; }
 
   .milestone-cell {
     cursor: pointer;
@@ -302,6 +299,17 @@
 
   .toast.show { opacity: 1; transform: translateY(0); }
   .toast.error { background: #ef4444; }
+
+  .modal label {
+    display: block;
+    font-size: 0.78rem;
+    color: #6b7c99;
+    margin-bottom: 5px;
+    margin-top: 12px;
+  }
+  .modal label:first-of-type { margin-top: 0; }
+
+  .btn-link { background: #6366f1; color: #fff; }
 </style>
 </head>
 <body>
@@ -322,6 +330,7 @@
 
 <div class="controls">
   <input type="text" id="searchInput" placeholder="🔍  Proje ara..." oninput="filterProjects()" />
+  <button class="btn btn-primary" onclick="openAddProjectModal()" style="white-space:nowrap">+ Yeni Proje</button>
   <div class="legend">
     <div class="legend-item"><div class="legend-dot dot-done"></div>Tamamlandı</div>
     <div class="legend-item"><div class="legend-dot dot-current"></div>Bu Hafta</div>
@@ -351,6 +360,35 @@
       <button class="btn btn-secondary" onclick="closeModal()">İptal</button>
       <button class="btn btn-done" onclick="setDone()">Done</button>
       <button class="btn btn-primary" onclick="saveModal()">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Project Modal -->
+<div class="modal-overlay" id="addProjectOverlay">
+  <div class="modal">
+    <h3>Yeni Proje Ekle</h3>
+    <label>Proje Adı *</label>
+    <input type="text" id="newProjectName" placeholder="Proje adını girin" />
+    <label>Sunum Linki (opsiyonel)</label>
+    <input type="text" id="newProjectUrl" placeholder="https://..." />
+    <div class="modal-actions" style="margin-top:8px">
+      <button class="btn btn-secondary" onclick="closeAddProjectModal()">İptal</button>
+      <button class="btn btn-primary" onclick="saveNewProject()">Ekle</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Link Modal -->
+<div class="modal-overlay" id="linkModalOverlay">
+  <div class="modal">
+    <h3>Sunum Linkini Düzenle</h3>
+    <p id="linkModalSubtitle" style="color:#6b7c99;font-size:0.82rem;margin-bottom:16px"></p>
+    <label>Link URL</label>
+    <input type="text" id="linkModalInput" placeholder="https://..." />
+    <div class="modal-actions" style="margin-top:8px">
+      <button class="btn btn-secondary" onclick="closeLinkModal()">İptal</button>
+      <button class="btn btn-link" onclick="saveLinkModal()">Kaydet</button>
     </div>
   </div>
 </div>
@@ -396,9 +434,8 @@ function renderTable(projects, milestones, currentWeek) {
   // Rows
   body.innerHTML = projects.map(p => {
     const safeName = htmlEnc(p.name);
-    const nameCell = p.url
-      ? `<a class="project-link" href="${htmlEnc(p.url)}" target="_blank">${safeName}<span class="link-icon">↗</span></a>`
-      : safeName;
+    const linkIcon = p.url ? `<span class="link-icon">↗</span>` : `<span class="link-icon" style="opacity:0.3">+link</span>`;
+    const nameCell = `<span class="project-name-cell" data-project="${htmlEnc(p.name)}" data-url="${htmlEnc(p.url || '')}" title="Linki düzenle">${safeName}${linkIcon}</span>`;
     let row = `<tr><td>${nameCell}</td>`;
     milestones.forEach(m => {
       const val = p.milestones[m] || "";
@@ -410,11 +447,12 @@ function renderTable(projects, milestones, currentWeek) {
     return row;
   }).join("");
 
-  // Event delegation — tek listener, tüm milestone hücrelerini yakalar
+  // Event delegation
   body.addEventListener("click", e => {
     const cell = e.target.closest(".milestone-cell");
-    if (!cell) return;
-    openModal(cell.dataset.project, cell.dataset.milestone, cell.dataset.val);
+    if (cell) { openModal(cell.dataset.project, cell.dataset.milestone, cell.dataset.val); return; }
+    const nameCell = e.target.closest(".project-name-cell");
+    if (nameCell) openLinkModal(nameCell.dataset.project, nameCell.dataset.url);
   });
 }
 
@@ -513,9 +551,67 @@ function htmlEnc(s) {
     .replace(/>/g, "&gt;");
 }
 
-// Close modal on overlay click
+// ── Yeni Proje ──────────────────────────────────
+function openAddProjectModal() {
+  document.getElementById("newProjectName").value = "";
+  document.getElementById("newProjectUrl").value = "";
+  document.getElementById("addProjectOverlay").classList.add("show");
+  setTimeout(() => document.getElementById("newProjectName").focus(), 100);
+}
+
+function closeAddProjectModal() {
+  document.getElementById("addProjectOverlay").classList.remove("show");
+}
+
+function saveNewProject() {
+  const name = document.getElementById("newProjectName").value.trim();
+  const url  = document.getElementById("newProjectUrl").value.trim();
+  if (!name) { showToast("Proje adı boş olamaz", true); return; }
+  closeAddProjectModal();
+  showToast("Ekleniyor...", false, true);
+  google.script.run
+    .withSuccessHandler(() => { showToast("Proje eklendi ✓"); loadData(); })
+    .withFailureHandler(err => showToast("Hata: " + (err.message || err), true, true))
+    .addProject(name, url);
+}
+
+// ── Link Düzenleme ───────────────────────────────
+let linkEditProject = null;
+
+function openLinkModal(project, currentUrl) {
+  linkEditProject = project;
+  document.getElementById("linkModalSubtitle").textContent = project;
+  document.getElementById("linkModalInput").value = currentUrl || "";
+  document.getElementById("linkModalOverlay").classList.add("show");
+  setTimeout(() => document.getElementById("linkModalInput").focus(), 100);
+}
+
+function closeLinkModal() {
+  document.getElementById("linkModalOverlay").classList.remove("show");
+  linkEditProject = null;
+}
+
+function saveLinkModal() {
+  if (!linkEditProject) return;
+  const url = document.getElementById("linkModalInput").value.trim();
+  const project = linkEditProject;
+  closeLinkModal();
+  showToast("Kaydediliyor...", false, true);
+  google.script.run
+    .withSuccessHandler(() => { showToast("Link güncellendi ✓"); loadData(); })
+    .withFailureHandler(err => showToast("Hata: " + (err.message || err), true, true))
+    .updateProjectLink(project, url);
+}
+
+// ── Overlay kapatma ──────────────────────────────
 document.getElementById("modalOverlay").addEventListener("click", e => {
   if (e.target === e.currentTarget) closeModal();
+});
+document.getElementById("addProjectOverlay").addEventListener("click", e => {
+  if (e.target === e.currentTarget) closeAddProjectModal();
+});
+document.getElementById("linkModalOverlay").addEventListener("click", e => {
+  if (e.target === e.currentTarget) closeLinkModal();
 });
 </script>
 </body>
