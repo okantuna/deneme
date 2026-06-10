@@ -480,6 +480,8 @@ function setDone() {
 function saveModal() {
   if (!editTarget) return;
   const value = document.getElementById("modalInput").value.trim();
+  const project = editTarget.project;
+  const milestone = editTarget.milestone;
   closeModal();
 
   google.script.run
@@ -488,7 +490,7 @@ function saveModal() {
       loadData();
     })
     .withFailureHandler(err => showToast("Hata: " + err.message, true))
-    .updateCell(editTarget.project, editTarget.milestone, value);
+    .updateCell(project, milestone, value);
 }
 
 function showToast(msg, isError) {
