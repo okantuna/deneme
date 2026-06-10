@@ -1,7 +1,7 @@
 // R&D L2 Planning Dashboard - Apps Script Backend
 
 const SHEET_NAME = "Sheet1";
-const MILESTONES = ["CA", "Prod. Def.", "Design", "DR CAAV&PRKF", "Proto", "VT", "DVP", "DR", "TOGO&ISVA"];
+const MILESTONES = ["CA", "Prod. Def.", "Design", "DR CAAV&PRKF", "Proto", "VT", "DVP", "DR TOGO&ISVA"];
 
 function doGet() {
   return HtmlService.createHtmlOutputFromFile("dashboard")
