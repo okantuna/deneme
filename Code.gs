@@ -40,10 +40,11 @@ function getDashboardData() {
 
 function getCurrentWeekNumber() {
   const now = new Date();
-  const start = new Date(now.getFullYear(), 0, 1);
-  const diff = now - start;
-  const oneWeek = 7 * 24 * 60 * 60 * 1000;
-  return Math.ceil(((diff / oneWeek) + start.getDay() + 1) / 7);
+  const date = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+  const dayNum = date.getUTCDay() || 7;
+  date.setUTCDate(date.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+  return Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
 }
 
 // Sheets menüsü oluştur

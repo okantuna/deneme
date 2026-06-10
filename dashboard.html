@@ -387,9 +387,14 @@ function renderTable(projects, milestones, currentWeek) {
 
 function getCellClass(val, currentWeek) {
   if (!val) return "status-empty";
-  if (val.toLowerCase() === "done") return "status-done";
-  const week = parseInt(val, 10);
-  if (isNaN(week)) return "status-future"; // text value
+  const lower = val.toLowerCase();
+  if (lower === "done") return "status-done";
+  if (lower === "na" || lower === "tbd" || lower === "n/a") return "status-empty";
+
+  // "W24" veya "24" formatlarını destekle
+  const match = val.match(/^[Ww]?(\d+)$/);
+  if (!match) return "status-future";
+  const week = parseInt(match[1], 10);
   if (week < currentWeek) return "status-overdue";
   if (week === currentWeek) return "status-current";
   return "status-future";
