@@ -46,6 +46,22 @@ function getCurrentWeekNumber() {
   return Math.ceil(((diff / oneWeek) + start.getDay() + 1) / 7);
 }
 
+// Sheets menüsü oluştur
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu("📊 Dashboard")
+    .addItem("Dashboard'u Aç", "openDashboard")
+    .addToUi();
+}
+
+// Sheets içinde tam ekran dialog olarak aç
+function openDashboard() {
+  const html = HtmlService.createHtmlOutputFromFile("dashboard")
+    .setWidth(1400)
+    .setHeight(900);
+  SpreadsheetApp.getUi().showModalDialog(html, "R&D L2 Planning Dashboard");
+}
+
 // Update a cell value from the dashboard
 function updateCell(projectName, milestone, value) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
