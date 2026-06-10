@@ -72,19 +72,31 @@ function openDashboard() {
 
 // Update a cell value from the dashboard
 function updateCell(projectName, milestone, value) {
+  Logger.log("updateCell called: project=%s, milestone=%s, value=%s", projectName, milestone, value);
+
   const ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (!ss) throw new Error("Spreadsheet bulunamadı");
+
   const sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) throw new Error("Sheet bulunamadı: " + SHEET_NAME);
+
   const data = sheet.getDataRange().getValues();
-  const headers = data[0];
+  const headers = data[0].map(h => String(h).trim());
 
-  const colIndex = headers.indexOf(milestone);
-  if (colIndex === -1) throw new Error("Milestone not found: " + milestone);
+  Logger.log("Headers: %s", JSON.stringify(headers));
 
+  // Büyük/küçük harf ve boşluk farkı olmaksızın eşleştir
+  const milestoneNorm = String(milestone).trim().toLowerCase();
+  const colIndex = headers.findIndex(h => h.toLowerCase() === milestoneNorm);
+  if (colIndex === -1) throw new Error("Sütun bulunamadı: '" + milestone + "' | Mevcut başlıklar: " + headers.join(", "));
+
+  const projectNorm = String(projectName).trim().toLowerCase();
   for (let i = 1; i < data.length; i++) {
-    if (String(data[i][0]).trim() === String(projectName).trim()) {
+    if (String(data[i][0]).trim().toLowerCase() === projectNorm) {
       sheet.getRange(i + 1, colIndex + 1).setValue(value);
+      Logger.log("Updated row %d, col %d to '%s'", i + 1, colIndex + 1, value);
       return { success: true };
     }
   }
-  throw new Error("Project not found: " + projectName);
+  throw new Error("Proje bulunamadı: '" + projectName + "'");
 }

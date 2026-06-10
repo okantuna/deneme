@@ -484,20 +484,25 @@ function saveModal() {
   const milestone = editTarget.milestone;
   closeModal();
 
+  showToast("Kaydediliyor...", false, true);
   google.script.run
     .withSuccessHandler(() => {
       showToast("Güncellendi ✓");
       loadData();
     })
-    .withFailureHandler(err => showToast("Hata: " + err.message, true))
+    .withFailureHandler(err => {
+      const msg = (err && err.message) ? err.message : JSON.stringify(err);
+      showToast("HATA: " + msg, true, true);
+      console.error("updateCell failed", err);
+    })
     .updateCell(project, milestone, value);
 }
 
-function showToast(msg, isError) {
+function showToast(msg, isError, persist) {
   const t = document.getElementById("toast");
   t.textContent = msg;
   t.className = "toast show" + (isError ? " error" : "");
-  setTimeout(() => t.className = "toast", 2800);
+  if (!persist) setTimeout(() => t.className = "toast", isError ? 6000 : 2800);
 }
 
 function htmlEnc(s) {
