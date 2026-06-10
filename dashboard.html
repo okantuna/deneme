@@ -3,510 +3,470 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>R&D L2 Planning Dashboard</title>
+<title>R&D L2 Planning</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-  body {
-    font-family: 'Inter', 'Segoe UI', sans-serif;
-    background: #f5f5f4;
-    color: #1c1917;
-    min-height: 100vh;
-    font-size: 14px;
-  }
+body {
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  background: #f5f5f4;
+  color: #1c1917;
+  min-height: 100vh;
+  font-size: 13px;
+}
 
-  /* ── Header ── */
-  header {
-    background: #fff;
-    padding: 16px 32px;
-    border-bottom: 1px solid #e7e5e4;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
+/* ── Layout ── */
+.app { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
-  .header-left { display: flex; align-items: center; gap: 12px; }
+/* ── Header ── */
+header {
+  background: #fff;
+  padding: 0 24px;
+  border-bottom: 1px solid #e7e5e4;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 52px;
+  flex-shrink: 0;
+}
 
-  .header-logo {
-    width: 32px; height: 32px;
-    background: #1c1917;
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    color: #fff;
-    font-weight: 700;
-    font-size: 13px;
-    letter-spacing: -0.5px;
-    flex-shrink: 0;
-  }
+.logo {
+  background: #1c1917;
+  color: #fff;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.3px;
+  padding: 5px 8px;
+  border-radius: 6px;
+}
 
-  header h1 {
-    font-size: 15px;
-    font-weight: 600;
-    color: #1c1917;
-    letter-spacing: -0.2px;
-  }
+header h1 { font-size: 14px; font-weight: 600; color: #1c1917; }
+.header-week { font-size: 12px; color: #a8a29e; margin-left: auto; }
 
-  .header-meta {
-    font-size: 12px;
-    color: #a8a29e;
-    margin-top: 1px;
-  }
+/* ── Toolbar ── */
+.toolbar {
+  background: #fff;
+  padding: 8px 24px;
+  border-bottom: 1px solid #e7e5e4;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
 
-  /* ── Stats ── */
-  .stats-bar {
-    display: flex;
-    gap: 0;
-    background: #fff;
-    border-bottom: 1px solid #e7e5e4;
-    padding: 0 32px;
-    overflow-x: auto;
-  }
+.search-wrap { position: relative; }
+.search-wrap svg {
+  position: absolute; left: 9px; top: 50%;
+  transform: translateY(-50%);
+  color: #a8a29e; pointer-events: none;
+}
+.search-wrap input {
+  background: #fafaf9;
+  border: 1px solid #e7e5e4;
+  color: #1c1917;
+  padding: 6px 10px 6px 30px;
+  border-radius: 6px;
+  font-size: 13px;
+  width: 200px;
+  outline: none;
+  font-family: inherit;
+  transition: border-color .15s, box-shadow .15s;
+}
+.search-wrap input:focus { border-color: #a8a29e; box-shadow: 0 0 0 3px rgba(168,162,158,.15); }
 
-  .stat {
-    display: flex;
-    flex-direction: column;
-    padding: 12px 24px 12px 0;
-    margin-right: 24px;
-    border-right: 1px solid #e7e5e4;
-    min-width: 90px;
-  }
+.btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+  font-family: inherit;
+  transition: background .12s;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.btn-primary   { background: #1c1917; color: #fff; border-color: #1c1917; }
+.btn-primary:hover { background: #292524; }
+.btn-ghost     { background: #fff; color: #57534e; border-color: #e7e5e4; }
+.btn-ghost:hover { background: #fafaf9; }
+.btn-green     { background: #16a34a; color: #fff; border-color: #16a34a; }
+.btn-green:hover { background: #15803d; }
+.btn-red       { background: #fff; color: #dc2626; border-color: #fecaca; }
+.btn-red:hover { background: #fef2f2; }
+.btn-sm { padding: 4px 9px; font-size: 12px; }
 
-  .stat:last-child { border-right: none; }
+.divider { width: 1px; height: 20px; background: #e7e5e4; margin: 0 4px; }
 
-  .stat-value {
-    font-size: 20px;
-    font-weight: 600;
-    color: #1c1917;
-    line-height: 1;
-  }
+.stats-chips { display: flex; gap: 6px; margin-left: auto; }
+.chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 500;
+  border: 1px solid;
+}
+.chip-total   { background: #fafaf9;  color: #57534e; border-color: #e7e5e4; }
+.chip-done    { background: #f0fdf4;  color: #15803d; border-color: #bbf7d0; }
+.chip-overdue { background: #fef2f2;  color: #b91c1c; border-color: #fecaca; }
+.chip-current { background: #fffbeb;  color: #b45309; border-color: #fde68a; }
 
-  .stat-label {
-    font-size: 11px;
-    color: #a8a29e;
-    margin-top: 3px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-  }
+/* ── Main content ── */
+.main { flex: 1; overflow: auto; }
 
-  .stat-value.green  { color: #16a34a; }
-  .stat-value.red    { color: #dc2626; }
-  .stat-value.amber  { color: #d97706; }
+/* ── Table ── */
+.table-wrap { padding: 16px 24px; }
 
-  /* ── Controls ── */
-  .controls {
-    padding: 12px 32px;
-    background: #fff;
-    border-bottom: 1px solid #e7e5e4;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 880px;
+  background: #fff;
+  border: 1px solid #e7e5e4;
+  border-radius: 10px;
+  overflow: hidden;
+}
 
-  .search-wrap {
-    position: relative;
-    flex-shrink: 0;
-  }
+thead th {
+  background: #fafaf9;
+  color: #78716c;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 9px 12px;
+  text-align: center;
+  border-bottom: 1px solid #e7e5e4;
+  position: sticky; top: 0; z-index: 20;
+  white-space: nowrap;
+}
+thead th:first-child { text-align: left; padding-left: 16px; min-width: 220px; }
 
-  .search-wrap svg {
-    position: absolute;
-    left: 10px; top: 50%;
-    transform: translateY(-50%);
-    color: #a8a29e;
-    pointer-events: none;
-  }
+/* Project row */
+tr.project-row { cursor: pointer; }
+tr.project-row td { padding: 0; border-bottom: 1px solid #f5f5f4; }
+tr.project-row:last-child td { border-bottom: none; }
 
-  .controls input {
-    background: #fafaf9;
-    border: 1px solid #e7e5e4;
-    color: #1c1917;
-    padding: 7px 12px 7px 32px;
-    border-radius: 6px;
-    font-size: 13px;
-    width: 220px;
-    outline: none;
-    font-family: inherit;
-    transition: border-color 0.15s, box-shadow 0.15s;
-  }
+.project-row-inner {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px 10px 16px;
+  gap: 8px;
+  transition: background .1s;
+}
+tr.project-row:hover .project-row-inner { background: #fafaf9; }
+tr.project-row.expanded .project-row-inner { background: #fafaf9; }
 
-  .controls input:focus {
-    border-color: #a8a29e;
-    box-shadow: 0 0 0 3px rgba(168,162,158,0.15);
-  }
+.toggle-icon {
+  width: 16px; height: 16px;
+  border: 1px solid #d6d3d1;
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 10px;
+  color: #78716c;
+  transition: transform .15s, background .1s;
+}
+tr.project-row.expanded .toggle-icon { background: #1c1917; color: #fff; border-color: #1c1917; }
 
-  .legend {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    margin-left: auto;
-    align-items: center;
-  }
+.project-name-text { font-weight: 500; color: #1c1917; flex: 1; }
+.project-link-btn {
+  font-size: 11px; color: #a8a29e;
+  opacity: 0; transition: opacity .12s;
+  cursor: pointer; padding: 2px 6px;
+  border-radius: 4px; border: 1px solid #e7e5e4;
+  background: #fff;
+}
+tr.project-row:hover .project-link-btn { opacity: 1; }
+.project-link-btn.has-link { color: #2563eb; border-color: #bfdbfe; background: #eff6ff; opacity: 1; }
 
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 12px;
-    color: #78716c;
-    font-weight: 500;
-  }
+.ms-cell { text-align: center; padding: 10px 8px; border-bottom: 1px solid #f5f5f4; }
 
-  .legend-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
+/* Milestone chip */
+.ms-chip {
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 3px 8px;
+  display: inline-block;
+  min-width: 52px;
+  font-weight: 500;
+  font-size: 11.5px;
+  border: 1px solid transparent;
+  transition: filter .12s;
+}
+.ms-chip:hover { filter: brightness(.93); }
+.s-done    { background:#f0fdf4; color:#15803d; border-color:#bbf7d0; }
+.s-current { background:#fffbeb; color:#b45309; border-color:#fde68a; }
+.s-future  { background:#eff6ff; color:#1d4ed8; border-color:#bfdbfe; }
+.s-overdue { background:#fef2f2; color:#b91c1c; border-color:#fecaca; }
+.s-empty   { background:#fafaf9; color:#c4b5a5; border-color:#e7e5e4; cursor:default; }
 
-  .dot-done    { background: #16a34a; }
-  .dot-current { background: #d97706; }
-  .dot-future  { background: #2563eb; }
-  .dot-overdue { background: #dc2626; }
-  .dot-empty   { background: #d6d3d1; }
+/* ── Detail panel (expanded row) ── */
+tr.detail-row td {
+  padding: 0;
+  border-bottom: 1px solid #e7e5e4;
+  background: #fafaf9;
+}
 
-  /* ── Table ── */
-  .table-wrapper {
-    padding: 24px 32px;
-    overflow-x: auto;
-  }
+.detail-panel {
+  padding: 0 16px 16px 40px;
+}
 
-  table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    min-width: 900px;
-    background: #fff;
-    border: 1px solid #e7e5e4;
-    border-radius: 10px;
-    overflow: hidden;
-  }
+.detail-loading { padding: 20px; color: #a8a29e; font-size: 12px; }
 
-  thead th {
-    background: #fafaf9;
-    color: #78716c;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    padding: 10px 12px;
-    text-align: center;
-    border-bottom: 1px solid #e7e5e4;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    white-space: nowrap;
-  }
+.milestone-group { margin-top: 14px; }
 
-  thead th:first-child {
-    text-align: left;
-    padding-left: 20px;
-    min-width: 200px;
-  }
+.ms-group-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
 
-  tbody tr {
-    transition: background 0.1s;
-    border-bottom: 1px solid #f5f5f4;
-  }
+.ms-group-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #57534e;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
 
-  tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: #fafaf9; }
+.ms-status-badge {
+  font-size: 10.5px;
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-weight: 500;
+  border: 1px solid;
+}
 
-  td {
-    padding: 10px 12px;
-    text-align: center;
-    vertical-align: middle;
-    border-bottom: 1px solid #f5f5f4;
-  }
+/* Task list */
+.task-list { display: flex; flex-direction: column; gap: 2px; }
 
-  tbody tr:last-child td { border-bottom: none; }
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  background: #fff;
+  border: 1px solid #e7e5e4;
+  border-radius: 6px;
+  transition: box-shadow .12s;
+}
+.task-item:hover { box-shadow: 0 1px 4px rgba(0,0,0,.06); }
 
-  td:first-child {
-    text-align: left;
-    padding-left: 20px;
-    font-weight: 500;
-    color: #1c1917;
-    font-size: 13.5px;
-  }
+.task-check {
+  width: 15px; height: 15px;
+  border: 1.5px solid #d6d3d1;
+  border-radius: 4px;
+  flex-shrink: 0;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; color: transparent;
+  transition: all .12s;
+}
+.task-item.done .task-check { background: #16a34a; border-color: #16a34a; color: #fff; }
+.task-item.done .task-name  { text-decoration: line-through; color: #a8a29e; }
 
-  /* ── Project name cell ── */
-  .project-name-cell {
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    color: #1c1917;
-    transition: color 0.12s;
-  }
+.task-name { flex: 1; font-size: 12.5px; color: #1c1917; }
 
-  .project-name-cell:hover { color: #2563eb; }
+.task-meta {
+  display: flex; gap: 6px; align-items: center;
+  flex-shrink: 0;
+}
 
-  .project-name-cell .link-icon {
-    font-size: 11px;
-    color: #a8a29e;
-    opacity: 0;
-    transition: opacity 0.12s;
-    flex-shrink: 0;
-  }
+.task-week { font-size: 11px; color: #78716c; background: #f5f5f4; padding: 1px 7px; border-radius: 10px; }
+.task-owner { font-size: 11px; color: #78716c; }
 
-  .project-name-cell:hover .link-icon { opacity: 1; }
-  .project-name-cell.has-link .link-icon { color: #2563eb; }
+.task-delete {
+  font-size: 13px; color: #d6d3d1; cursor: pointer;
+  opacity: 0; transition: opacity .12s, color .12s;
+  padding: 2px 4px; border-radius: 3px;
+  border: none; background: none; font-family: inherit;
+}
+.task-item:hover .task-delete { opacity: 1; }
+.task-delete:hover { color: #dc2626; }
 
-  /* ── Milestone chips ── */
-  .milestone-cell {
-    cursor: pointer;
-    border-radius: 5px;
-    padding: 4px 10px;
-    display: inline-block;
-    min-width: 58px;
-    font-weight: 500;
-    font-size: 12px;
-    transition: filter 0.12s;
-    letter-spacing: 0.1px;
-    border: 1px solid transparent;
-  }
+/* Add task inline */
+.add-task-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
 
-  .milestone-cell:hover { filter: brightness(0.94); }
+.add-task-row input, .add-task-row select {
+  background: #fff;
+  border: 1px solid #e7e5e4;
+  color: #1c1917;
+  padding: 5px 9px;
+  border-radius: 5px;
+  font-size: 12.5px;
+  outline: none;
+  font-family: inherit;
+  transition: border-color .15s;
+}
+.add-task-row input:focus, .add-task-row select:focus { border-color: #a8a29e; }
+.add-task-row input.task-input { flex: 1; min-width: 160px; }
+.add-task-row input.week-input { width: 70px; }
+.add-task-row input.owner-input { width: 110px; }
 
-  .status-done    { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
-  .status-current { background: #fffbeb; color: #b45309; border-color: #fde68a; }
-  .status-future  { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
-  .status-overdue { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }
-  .status-empty   { background: #fafaf9; color: #c4b5a5; border-color: #e7e5e4; cursor: default; }
+.add-task-btn-open {
+  display: flex; align-items: center; gap: 5px;
+  color: #a8a29e; font-size: 12px; cursor: pointer;
+  padding: 5px 8px; border-radius: 5px;
+  border: 1px dashed #d6d3d1; background: none;
+  font-family: inherit; transition: all .12s;
+  margin-top: 6px; width: 100%;
+}
+.add-task-btn-open:hover { border-color: #a8a29e; color: #57534e; background: #fff; }
 
-  /* ── Loading ── */
-  .loading {
-    text-align: center;
-    padding: 80px;
-    color: #a8a29e;
-    font-size: 13px;
-  }
+/* ── Modals ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(28,25,23,.35);
+  z-index: 100; align-items: center; justify-content: center;
+}
+.modal-overlay.show { display: flex; }
 
-  .spinner {
-    display: inline-block;
-    width: 24px; height: 24px;
-    border: 2px solid #e7e5e4;
-    border-top-color: #78716c;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    margin-bottom: 12px;
-  }
+.modal {
+  background: #fff;
+  border: 1px solid #e7e5e4;
+  border-radius: 12px;
+  padding: 22px 24px;
+  min-width: 360px; max-width: 480px; width: 100%;
+  box-shadow: 0 8px 32px rgba(28,25,23,.12);
+}
+.modal h3 { font-size: 14px; font-weight: 600; margin-bottom: 16px; }
 
-  @keyframes spin { to { transform: rotate(360deg); } }
+.form-group { margin-bottom: 12px; }
+.form-group label { display: block; font-size: 11.5px; font-weight: 500; color: #57534e; margin-bottom: 4px; }
+.form-group input, .form-group select {
+  width: 100%; background: #fafaf9; border: 1px solid #e7e5e4;
+  color: #1c1917; padding: 7px 10px; border-radius: 6px;
+  font-size: 13px; outline: none; font-family: inherit;
+  transition: border-color .15s;
+}
+.form-group input:focus, .form-group select:focus { border-color: #a8a29e; }
 
-  /* ── Modal ── */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(28,25,23,0.4);
-    z-index: 100;
-    align-items: center;
-    justify-content: center;
-  }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; }
 
-  .modal-overlay.show { display: flex; }
+/* ── Toast ── */
+.toast {
+  position: fixed; bottom: 20px; right: 20px;
+  background: #1c1917; color: #fff;
+  padding: 9px 14px; border-radius: 7px;
+  font-size: 12.5px; font-weight: 500;
+  opacity: 0; transform: translateY(6px);
+  transition: all .2s; z-index: 300;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.error { background: #dc2626; }
 
-  .modal {
-    background: #fff;
-    border: 1px solid #e7e5e4;
-    border-radius: 12px;
-    padding: 24px;
-    min-width: 360px;
-    box-shadow: 0 8px 32px rgba(28,25,23,0.12), 0 2px 8px rgba(28,25,23,0.06);
-  }
-
-  .modal h3 {
-    color: #1c1917;
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 4px;
-  }
-
-  .modal p {
-    color: #78716c;
-    font-size: 12.5px;
-    margin-bottom: 18px;
-  }
-
-  .modal label {
-    display: block;
-    font-size: 12px;
-    font-weight: 500;
-    color: #57534e;
-    margin-bottom: 5px;
-    margin-top: 14px;
-  }
-
-  .modal label:first-of-type { margin-top: 0; }
-
-  .modal input {
-    width: 100%;
-    background: #fafaf9;
-    border: 1px solid #e7e5e4;
-    color: #1c1917;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 13.5px;
-    outline: none;
-    font-family: inherit;
-    margin-bottom: 4px;
-    transition: border-color 0.15s, box-shadow 0.15s;
-  }
-
-  .modal input:focus {
-    border-color: #a8a29e;
-    box-shadow: 0 0 0 3px rgba(168,162,158,0.15);
-  }
-
-  .modal-actions {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-end;
-    margin-top: 20px;
-  }
-
-  .btn {
-    padding: 7px 16px;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    border: 1px solid transparent;
-    font-family: inherit;
-    transition: background 0.12s, box-shadow 0.12s;
-    line-height: 1.4;
-  }
-
-  .btn-primary   { background: #1c1917; color: #fff; border-color: #1c1917; }
-  .btn-primary:hover { background: #292524; }
-  .btn-secondary { background: #fff; color: #57534e; border-color: #e7e5e4; }
-  .btn-secondary:hover { background: #fafaf9; }
-  .btn-done      { background: #16a34a; color: #fff; border-color: #16a34a; }
-  .btn-done:hover { background: #15803d; }
-  .btn-link      { background: #2563eb; color: #fff; border-color: #2563eb; }
-  .btn-link:hover { background: #1d4ed8; }
-
-  /* ── Toast ── */
-  .toast {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    background: #1c1917;
-    color: #fff;
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 500;
-    opacity: 0;
-    transform: translateY(6px);
-    transition: all 0.2s;
-    z-index: 200;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  }
-
-  .toast.show { opacity: 1; transform: translateY(0); }
-  .toast.error { background: #dc2626; }
+/* ── Loading ── */
+.page-loading { text-align: center; padding: 80px; color: #a8a29e; }
+.spinner {
+  display: inline-block; width: 22px; height: 22px;
+  border: 2px solid #e7e5e4; border-top-color: #78716c;
+  border-radius: 50%; animation: spin .7s linear infinite; margin-bottom: 10px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
+<div class="app">
 
-<header>
-  <div class="header-left">
-    <div class="header-logo">R&amp;D</div>
-    <div>
-      <h1>L2 Planning</h1>
-      <div class="header-meta" id="lastUpdated">Yükleniyor...</div>
+  <!-- Header -->
+  <header>
+    <div class="logo">R&amp;D</div>
+    <h1>L2 Planning</h1>
+    <span class="header-week" id="headerWeek"></span>
+  </header>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" placeholder="Proje ara..." oninput="filterProjects()">
+    </div>
+    <div class="divider"></div>
+    <button class="btn btn-primary" onclick="openAddProjectModal()">+ Proje Ekle</button>
+    <div class="stats-chips" id="statsChips" style="display:none">
+      <span class="chip chip-total"><strong id="statTotal">0</strong> proje</span>
+      <span class="chip chip-done"><strong id="statDone">0</strong> tamamlandı</span>
+      <span class="chip chip-overdue"><strong id="statOverdue">0</strong> gecikmiş</span>
+      <span class="chip chip-current"><strong id="statCurrentWeek">0</strong> bu hafta</span>
     </div>
   </div>
-</header>
 
-<div class="stats-bar" id="statsBar" style="display:none">
-  <div class="stat">
-    <div class="stat-value" id="statTotal">0</div>
-    <div class="stat-label">Proje</div>
-  </div>
-  <div class="stat">
-    <div class="stat-value green" id="statDone">0</div>
-    <div class="stat-label">Tamamlandı</div>
-  </div>
-  <div class="stat">
-    <div class="stat-value red" id="statOverdue">0</div>
-    <div class="stat-label">Gecikmiş</div>
-  </div>
-  <div class="stat">
-    <div class="stat-value amber" id="statCurrentWeek">0</div>
-    <div class="stat-label">Bu Hafta</div>
+  <!-- Main -->
+  <div class="main">
+    <div class="table-wrap">
+      <div class="page-loading" id="loadingDiv">
+        <div class="spinner"></div><br>Yükleniyor...
+      </div>
+      <table id="dashTable" style="display:none">
+        <thead id="tableHead"></thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
   </div>
 </div>
 
-<div class="controls">
-  <div class="search-wrap">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <input type="text" id="searchInput" placeholder="Proje ara..." oninput="filterProjects()" />
-  </div>
-  <button class="btn btn-primary" onclick="openAddProjectModal()">+ Yeni Proje</button>
-  <div class="legend">
-    <div class="legend-item"><div class="legend-dot dot-done"></div>Tamamlandı</div>
-    <div class="legend-item"><div class="legend-dot dot-current"></div>Bu Hafta</div>
-    <div class="legend-item"><div class="legend-dot dot-future"></div>Gelecek</div>
-    <div class="legend-item"><div class="legend-dot dot-overdue"></div>Gecikmiş</div>
-    <div class="legend-item"><div class="legend-dot dot-empty"></div>Boş</div>
-  </div>
-</div>
-
-<div class="table-wrapper">
-  <div class="loading" id="loadingDiv">
-    <div class="spinner"></div><br>Veriler yükleniyor...
-  </div>
-  <table id="dashTable" style="display:none">
-    <thead id="tableHead"></thead>
-    <tbody id="tableBody"></tbody>
-  </table>
-</div>
-
-<!-- Edit Modal -->
-<div class="modal-overlay" id="modalOverlay">
+<!-- Milestone edit modal -->
+<div class="modal-overlay" id="msModalOverlay">
   <div class="modal">
-    <h3 id="modalTitle">Milestone Güncelle</h3>
-    <p id="modalSubtitle"></p>
-    <input type="text" id="modalInput" placeholder='Hafta no (örn: 24) veya "Done"' />
+    <h3 id="msModalTitle">Milestone</h3>
+    <p id="msModalSub" style="font-size:12px;color:#78716c;margin-bottom:14px"></p>
+    <div class="form-group">
+      <label>Hafta (örn: W24) veya "Done"</label>
+      <input type="text" id="msModalInput" placeholder='W24 veya Done'>
+    </div>
     <div class="modal-actions">
-      <button class="btn btn-secondary" onclick="closeModal()">İptal</button>
-      <button class="btn btn-done" onclick="setDone()">Done</button>
-      <button class="btn btn-primary" onclick="saveModal()">Kaydet</button>
+      <button class="btn btn-ghost" onclick="closeMsModal()">İptal</button>
+      <button class="btn btn-green" onclick="setMsDone()">Done ✓</button>
+      <button class="btn btn-primary" onclick="saveMsModal()">Kaydet</button>
     </div>
   </div>
 </div>
 
-<!-- Add Project Modal -->
+<!-- Add project modal -->
 <div class="modal-overlay" id="addProjectOverlay">
   <div class="modal">
-    <h3>Yeni Proje Ekle</h3>
-    <label>Proje Adı *</label>
-    <input type="text" id="newProjectName" placeholder="Proje adını girin" />
-    <label>Sunum Linki (opsiyonel)</label>
-    <input type="text" id="newProjectUrl" placeholder="https://..." />
-    <div class="modal-actions" style="margin-top:8px">
-      <button class="btn btn-secondary" onclick="closeAddProjectModal()">İptal</button>
+    <h3>Yeni Proje</h3>
+    <div class="form-group">
+      <label>Proje Adı *</label>
+      <input type="text" id="newProjectName" placeholder="Proje adı">
+    </div>
+    <div class="form-group">
+      <label>Sunum Linki</label>
+      <input type="text" id="newProjectUrl" placeholder="https://...">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeAddProjectModal()">İptal</button>
       <button class="btn btn-primary" onclick="saveNewProject()">Ekle</button>
     </div>
   </div>
 </div>
 
-<!-- Edit Link Modal -->
+<!-- Edit link modal -->
 <div class="modal-overlay" id="linkModalOverlay">
   <div class="modal">
-    <h3>Sunum Linkini Düzenle</h3>
-    <p id="linkModalSubtitle" style="color:#6b7c99;font-size:0.82rem;margin-bottom:16px"></p>
-    <label>Link URL</label>
-    <input type="text" id="linkModalInput" placeholder="https://..." />
-    <div class="modal-actions" style="margin-top:8px">
-      <button class="btn btn-secondary" onclick="closeLinkModal()">İptal</button>
-      <button class="btn btn-link" onclick="saveLinkModal()">Kaydet</button>
+    <h3>Sunum Linki</h3>
+    <p id="linkModalSub" style="font-size:12px;color:#78716c;margin-bottom:14px"></p>
+    <div class="form-group">
+      <label>URL</label>
+      <input type="text" id="linkModalInput" placeholder="https://...">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeLinkModal()">İptal</button>
+      <button class="btn btn-primary" onclick="saveLinkModal()">Kaydet</button>
     </div>
   </div>
 </div>
@@ -514,16 +474,20 @@
 <div class="toast" id="toast"></div>
 
 <script>
+// ── State ──────────────────────────────────────────────────────────────────
 let dashData = null;
-let editTarget = null;
+let msEditTarget = null;
+let linkEditProject = null;
+let expandedProjects = new Set();
 
-window.onload = () => loadData();
+// ── Init ───────────────────────────────────────────────────────────────────
+window.onload = loadData;
 
 function loadData() {
   google.script.run
     .withSuccessHandler(onDataLoaded)
     .withFailureHandler(err => {
-      document.getElementById("loadingDiv").innerHTML = "⚠️ Veri yüklenemedi: " + err.message;
+      document.getElementById("loadingDiv").innerHTML = "⚠️ " + err.message;
     })
     .getDashboardData();
 }
@@ -532,156 +496,318 @@ function onDataLoaded(data) {
   dashData = data;
   document.getElementById("loadingDiv").style.display = "none";
   document.getElementById("dashTable").style.display = "table";
-  document.getElementById("statsBar").style.display = "flex";
-  document.getElementById("lastUpdated").textContent =
-    "Hafta " + data.currentWeek + "  •  Son güncelleme: " + new Date().toLocaleTimeString("tr-TR");
-  renderTable(data.projects, data.milestones, data.currentWeek);
-  renderStats(data.projects, data.milestones, data.currentWeek);
+  document.getElementById("statsChips").style.display = "flex";
+  document.getElementById("headerWeek").textContent = "Hafta " + data.currentWeek;
+  renderTable();
 }
 
-function renderTable(projects, milestones, currentWeek) {
+// ── Render ─────────────────────────────────────────────────────────────────
+function renderTable() {
+  const { projects, milestones, currentWeek } = dashData;
   const head = document.getElementById("tableHead");
   const body = document.getElementById("tableBody");
 
-  // Header
-  let th = "<tr><th>Proje</th>";
+  let th = `<tr><th>Proje</th>`;
   milestones.forEach(m => th += `<th>${m}</th>`);
-  th += "</tr>";
+  th += `</tr>`;
   head.innerHTML = th;
 
-  // Rows
-  body.innerHTML = projects.map(p => {
-    const safeName = htmlEnc(p.name);
-    const linkIcon = p.url ? `<span class="link-icon">↗</span>` : `<span class="link-icon">+ link</span>`;
-    const hasLink = p.url ? " has-link" : "";
-    const nameCell = `<span class="project-name-cell${hasLink}" data-project="${htmlEnc(p.name)}" data-url="${htmlEnc(p.url || '')}" title="Linki düzenle">${safeName}${linkIcon}</span>`;
-    let row = `<tr><td>${nameCell}</td>`;
-    milestones.forEach(m => {
-      const val = p.milestones[m] || "";
-      const cls = getCellClass(val, currentWeek);
-      const label = val || "—";
-      row += `<td><span class="milestone-cell ${cls}" data-project="${htmlEnc(p.name)}" data-milestone="${htmlEnc(m)}" data-val="${htmlEnc(val)}">${label}</span></td>`;
-    });
-    row += "</tr>";
-    return row;
-  }).join("");
+  let html = "";
+  projects.forEach((p, idx) => {
+    const isExp = expandedProjects.has(p.name);
+    html += buildProjectRow(p, milestones, currentWeek, isExp);
+    if (isExp) html += buildDetailRow(p.name);
+  });
+  body.innerHTML = html;
 
-  // Event delegation
-  body.addEventListener("click", e => {
-    const cell = e.target.closest(".milestone-cell");
-    if (cell) { openModal(cell.dataset.project, cell.dataset.milestone, cell.dataset.val); return; }
-    const nameCell = e.target.closest(".project-name-cell");
-    if (nameCell) openLinkModal(nameCell.dataset.project, nameCell.dataset.url);
+  renderStats();
+
+  // Re-attach events
+  body.addEventListener("click", handleBodyClick);
+}
+
+function buildProjectRow(p, milestones, currentWeek, expanded) {
+  const safeName = enc(p.name);
+  const linkClass = p.url ? " has-link" : "";
+  const linkLabel = p.url ? "↗ Link" : "+ Link";
+  const expClass  = expanded ? " expanded" : "";
+
+  let row = `<tr class="project-row${expClass}" data-project="${enc(p.name)}">
+    <td>
+      <div class="project-row-inner">
+        <span class="toggle-icon">${expanded ? "−" : "+"}</span>
+        <span class="project-name-text">${safeName}</span>
+        <button class="project-link-btn${linkClass}" data-project="${enc(p.name)}" data-url="${enc(p.url||'')}">${linkLabel}</button>
+      </div>
+    </td>`;
+
+  milestones.forEach(m => {
+    const val = p.milestones[m] || "";
+    const cls = msClass(val, currentWeek);
+    row += `<td class="ms-cell">
+      <span class="ms-chip ${cls}" data-project="${enc(p.name)}" data-ms="${enc(m)}" data-val="${enc(val)}">${val || "—"}</span>
+    </td>`;
+  });
+  row += `</tr>`;
+  return row;
+}
+
+function buildDetailRow(projectName) {
+  return `<tr class="detail-row" data-for="${enc(projectName)}">
+    <td colspan="100">
+      <div class="detail-panel" id="detail-${safeId(projectName)}">
+        <div class="detail-loading">Yükleniyor...</div>
+      </div>
+    </td>
+  </tr>`;
+}
+
+// ── Click handling ─────────────────────────────────────────────────────────
+function handleBodyClick(e) {
+  // Milestone chip
+  const chip = e.target.closest(".ms-chip");
+  if (chip && !chip.classList.contains("s-empty")) {
+    openMsModal(chip.dataset.project, chip.dataset.ms, chip.dataset.val);
+    return;
+  }
+
+  // Link button
+  const linkBtn = e.target.closest(".project-link-btn");
+  if (linkBtn) {
+    e.stopPropagation();
+    openLinkModal(linkBtn.dataset.project, linkBtn.dataset.url);
+    return;
+  }
+
+  // Project row toggle
+  const projRow = e.target.closest(".project-row");
+  if (projRow && !e.target.closest(".ms-chip") && !e.target.closest(".project-link-btn")) {
+    toggleProject(projRow.dataset.project);
+  }
+}
+
+function toggleProject(name) {
+  if (expandedProjects.has(name)) {
+    expandedProjects.delete(name);
+    renderTable();
+  } else {
+    expandedProjects.add(name);
+    renderTable();
+    loadProjectTasks(name);
+  }
+}
+
+// ── Task panel ─────────────────────────────────────────────────────────────
+function loadProjectTasks(projectName) {
+  google.script.run
+    .withSuccessHandler(tasks => renderDetailPanel(projectName, tasks))
+    .withFailureHandler(err => {
+      const panel = document.getElementById("detail-" + safeId(projectName));
+      if (panel) panel.innerHTML = `<div class="detail-loading">⚠️ ${err.message}</div>`;
+    })
+    .getProjectTasks(projectName);
+}
+
+function renderDetailPanel(projectName, tasks) {
+  const panel = document.getElementById("detail-" + safeId(projectName));
+  if (!panel) return;
+
+  const milestones = dashData.milestones;
+  const currentWeek = dashData.currentWeek;
+
+  let html = "";
+  milestones.forEach(ms => {
+    const msTasks = tasks.filter(t => t.milestone === ms);
+    const msVal   = (dashData.projects.find(p => p.name === projectName) || {}).milestones?.[ms] || "";
+    const cls     = msClass(msVal, currentWeek);
+    const badge   = msVal ? `<span class="ms-status-badge ${cls}">${msVal}</span>` : "";
+
+    html += `<div class="milestone-group" data-ms="${enc(ms)}">
+      <div class="ms-group-header">
+        <span class="ms-group-label">${enc(ms)}</span>
+        ${badge}
+      </div>
+      <div class="task-list" id="tasklist-${safeId(projectName)}-${safeId(ms)}">
+        ${msTasks.map(t => buildTaskItem(t, currentWeek)).join("")}
+      </div>
+      ${buildAddTaskRow(projectName, ms)}
+    </div>`;
+  });
+
+  panel.innerHTML = html;
+
+  // bind add-task open buttons
+  panel.querySelectorAll(".add-task-btn-open").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const form = document.getElementById("addform-" + safeId(projectName) + "-" + safeId(btn.dataset.ms));
+      if (form) { form.style.display = "flex"; btn.style.display = "none"; form.querySelector(".task-input").focus(); }
+    });
+  });
+
+  // task check click
+  panel.querySelectorAll(".task-check").forEach(el => {
+    el.addEventListener("click", () => toggleTaskDone(el));
+  });
+
+  // task delete
+  panel.querySelectorAll(".task-delete").forEach(el => {
+    el.addEventListener("click", () => deleteTaskRow(el));
   });
 }
 
-function getCellClass(val, currentWeek) {
-  if (!val) return "status-empty";
-  const lower = val.toLowerCase();
-  if (lower === "done") return "status-done";
-  if (lower === "na" || lower === "tbd" || lower === "n/a") return "status-empty";
-
-  // "W24" veya "24" formatlarını destekle
-  const match = val.match(/^[Ww]?(\d+)$/);
-  if (!match) return "status-future";
-  const week = parseInt(match[1], 10);
-  if (week < currentWeek) return "status-overdue";
-  if (week === currentWeek) return "status-current";
-  return "status-future";
+function buildTaskItem(t, currentWeek) {
+  const isDone = t.status.toLowerCase() === "done" || t.status.toLowerCase() === "tamamlandı";
+  const doneClass = isDone ? " done" : "";
+  const checkMark = isDone ? "✓" : "";
+  const weekLabel = t.week ? `<span class="task-week">${enc(t.week)}</span>` : "";
+  const ownerLabel = t.owner ? `<span class="task-owner">${enc(t.owner)}</span>` : "";
+  return `<div class="task-item${doneClass}" data-row="${t.row}">
+    <div class="task-check" data-row="${t.row}" data-status="${enc(t.status)}">${checkMark}</div>
+    <span class="task-name">${enc(t.task)}</span>
+    <div class="task-meta">${weekLabel}${ownerLabel}</div>
+    <button class="task-delete" data-row="${t.row}">✕</button>
+  </div>`;
 }
 
-function renderStats(projects, milestones, currentWeek) {
+function buildAddTaskRow(projectName, ms) {
+  const pid = safeId(projectName);
+  const mid = safeId(ms);
+  const formId = `addform-${pid}-${mid}`;
+  return `
+    <button class="add-task-btn-open" data-ms="${enc(ms)}">+ Aksiyon ekle</button>
+    <div class="add-task-row" id="${formId}" style="display:none">
+      <input class="task-input"  placeholder="Aksiyon açıklaması..." onkeydown="if(event.key==='Enter')submitAddTask(this,'${enc(projectName)}','${enc(ms)}','${formId}')">
+      <input class="week-input"  placeholder="Hafta">
+      <input class="owner-input" placeholder="Sorumlu">
+      <button class="btn btn-green btn-sm" onclick="submitAddTask(this.previousElementSibling.previousElementSibling.previousElementSibling,'${enc(projectName)}','${enc(ms)}','${formId}')">Ekle</button>
+      <button class="btn btn-ghost btn-sm" onclick="cancelAddTask('${formId}')">İptal</button>
+    </div>`;
+}
+
+function cancelAddTask(formId) {
+  const form = document.getElementById(formId);
+  if (!form) return;
+  form.style.display = "none";
+  const btn = form.previousElementSibling;
+  if (btn) btn.style.display = "";
+}
+
+function submitAddTask(taskInput, projectName, ms, formId) {
+  const form     = document.getElementById(formId);
+  const inputs   = form.querySelectorAll("input");
+  const taskName = inputs[0].value.trim();
+  const week     = inputs[1].value.trim();
+  const owner    = inputs[2].value.trim();
+  if (!taskName) { inputs[0].focus(); return; }
+
+  cancelAddTask(formId);
+  showToast("Ekleniyor...", false, true);
+
+  google.script.run
+    .withSuccessHandler(() => {
+      showToast("Aksiyon eklendi ✓");
+      loadProjectTasks(projectName);
+    })
+    .withFailureHandler(err => showToast("Hata: " + err.message, true, true))
+    .addTask(projectName, ms, taskName, "Bekliyor", week, owner);
+}
+
+function toggleTaskDone(el) {
+  const row    = parseInt(el.dataset.row);
+  const isDone = el.parentElement.classList.contains("done");
+  const newStatus = isDone ? "Bekliyor" : "Done";
+  google.script.run
+    .withSuccessHandler(() => {
+      el.parentElement.classList.toggle("done", !isDone);
+      el.textContent = isDone ? "" : "✓";
+    })
+    .withFailureHandler(err => showToast("Hata: " + err.message, true))
+    .updateTask(row, "status", newStatus);
+}
+
+function deleteTaskRow(el) {
+  const row = parseInt(el.dataset.row);
+  if (!confirm("Bu aksiyonu silmek istiyor musunuz?")) return;
+  google.script.run
+    .withSuccessHandler(() => {
+      el.closest(".task-item").remove();
+      showToast("Silindi");
+    })
+    .withFailureHandler(err => showToast("Hata: " + err.message, true))
+    .deleteTask(row);
+}
+
+// ── Stats ──────────────────────────────────────────────────────────────────
+function renderStats() {
+  const { projects, milestones, currentWeek } = dashData;
   let done = 0, overdue = 0, current = 0;
-  projects.forEach(p => {
-    milestones.forEach(m => {
-      const val = p.milestones[m] || "";
-      const cls = getCellClass(val, currentWeek);
-      if (cls === "status-done") done++;
-      if (cls === "status-overdue") overdue++;
-      if (cls === "status-current") current++;
-    });
-  });
+  projects.forEach(p => milestones.forEach(m => {
+    const cls = msClass(p.milestones[m] || "", currentWeek);
+    if (cls === "s-done")    done++;
+    if (cls === "s-overdue") overdue++;
+    if (cls === "s-current") current++;
+  }));
   document.getElementById("statTotal").textContent = projects.length;
   document.getElementById("statDone").textContent = done;
   document.getElementById("statOverdue").textContent = overdue;
   document.getElementById("statCurrentWeek").textContent = current;
 }
 
+// ── Filter ─────────────────────────────────────────────────────────────────
 function filterProjects() {
   const q = document.getElementById("searchInput").value.toLowerCase();
-  document.querySelectorAll("#tableBody tr").forEach(row => {
-    const name = row.querySelector("td").textContent.toLowerCase();
-    row.style.display = name.includes(q) ? "" : "none";
+  document.querySelectorAll("#tableBody tr.project-row").forEach(row => {
+    const name = row.dataset.project.toLowerCase();
+    const show = name.includes(q);
+    row.style.display = show ? "" : "none";
+    const detail = document.querySelector(`tr.detail-row[data-for="${enc(row.dataset.project)}"]`);
+    if (detail) detail.style.display = show ? "" : "none";
   });
 }
 
-function openModal(project, milestone, current) {
-  editTarget = { project, milestone };
-  document.getElementById("modalTitle").textContent = milestone;
-  document.getElementById("modalSubtitle").textContent = "Proje: " + project;
-  document.getElementById("modalInput").value = current === "—" ? "" : current;
-  document.getElementById("modalOverlay").classList.add("show");
-  setTimeout(() => document.getElementById("modalInput").focus(), 100);
+// ── Milestone modal ────────────────────────────────────────────────────────
+function openMsModal(project, ms, val) {
+  msEditTarget = { project, ms };
+  document.getElementById("msModalTitle").textContent = ms;
+  document.getElementById("msModalSub").textContent   = project;
+  document.getElementById("msModalInput").value = val === "—" ? "" : val;
+  document.getElementById("msModalOverlay").classList.add("show");
+  setTimeout(() => document.getElementById("msModalInput").focus(), 80);
 }
-
-function closeModal() {
-  document.getElementById("modalOverlay").classList.remove("show");
-  editTarget = null;
+function closeMsModal() {
+  document.getElementById("msModalOverlay").classList.remove("show");
+  msEditTarget = null;
 }
-
-function setDone() {
-  document.getElementById("modalInput").value = "Done";
-  saveModal();
-}
-
-function saveModal() {
-  if (!editTarget) return;
-  const value = document.getElementById("modalInput").value.trim();
-  const project = editTarget.project;
-  const milestone = editTarget.milestone;
-  closeModal();
-
+function setMsDone() { document.getElementById("msModalInput").value = "Done"; saveMsModal(); }
+function saveMsModal() {
+  if (!msEditTarget) return;
+  const value = document.getElementById("msModalInput").value.trim();
+  const { project, ms } = msEditTarget;
+  closeMsModal();
   showToast("Kaydediliyor...", false, true);
   google.script.run
     .withSuccessHandler(() => {
       showToast("Güncellendi ✓");
-      loadData();
+      // Update local data & re-render
+      const p = dashData.projects.find(x => x.name === project);
+      if (p) p.milestones[ms] = value;
+      renderTable();
+      if (expandedProjects.has(project)) loadProjectTasks(project);
     })
-    .withFailureHandler(err => {
-      const msg = (err && err.message) ? err.message : JSON.stringify(err);
-      showToast("HATA: " + msg, true, true);
-      console.error("updateCell failed", err);
-    })
-    .updateCell(project, milestone, value);
+    .withFailureHandler(err => showToast("HATA: " + err.message, true, true))
+    .updateCell(project, ms, value);
 }
 
-function showToast(msg, isError, persist) {
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.className = "toast show" + (isError ? " error" : "");
-  if (!persist) setTimeout(() => t.className = "toast", isError ? 6000 : 2800);
-}
-
-function htmlEnc(s) {
-  return String(s)
-    .replace(/&/g, "&amp;")
-    .replace(/"/g, "&quot;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-}
-
-// ── Yeni Proje ──────────────────────────────────
+// ── Add project modal ──────────────────────────────────────────────────────
 function openAddProjectModal() {
   document.getElementById("newProjectName").value = "";
-  document.getElementById("newProjectUrl").value = "";
+  document.getElementById("newProjectUrl").value  = "";
   document.getElementById("addProjectOverlay").classList.add("show");
-  setTimeout(() => document.getElementById("newProjectName").focus(), 100);
+  setTimeout(() => document.getElementById("newProjectName").focus(), 80);
 }
-
 function closeAddProjectModal() {
   document.getElementById("addProjectOverlay").classList.remove("show");
 }
-
 function saveNewProject() {
   const name = document.getElementById("newProjectName").value.trim();
   const url  = document.getElementById("newProjectUrl").value.trim();
@@ -690,47 +816,68 @@ function saveNewProject() {
   showToast("Ekleniyor...", false, true);
   google.script.run
     .withSuccessHandler(() => { showToast("Proje eklendi ✓"); loadData(); })
-    .withFailureHandler(err => showToast("Hata: " + (err.message || err), true, true))
+    .withFailureHandler(err => showToast("Hata: " + err.message, true, true))
     .addProject(name, url);
 }
 
-// ── Link Düzenleme ───────────────────────────────
-let linkEditProject = null;
-
-function openLinkModal(project, currentUrl) {
+// ── Link modal ─────────────────────────────────────────────────────────────
+function openLinkModal(project, url) {
   linkEditProject = project;
-  document.getElementById("linkModalSubtitle").textContent = project;
-  document.getElementById("linkModalInput").value = currentUrl || "";
+  document.getElementById("linkModalSub").textContent   = project;
+  document.getElementById("linkModalInput").value = url || "";
   document.getElementById("linkModalOverlay").classList.add("show");
-  setTimeout(() => document.getElementById("linkModalInput").focus(), 100);
+  setTimeout(() => document.getElementById("linkModalInput").focus(), 80);
 }
-
 function closeLinkModal() {
   document.getElementById("linkModalOverlay").classList.remove("show");
   linkEditProject = null;
 }
-
 function saveLinkModal() {
   if (!linkEditProject) return;
-  const url = document.getElementById("linkModalInput").value.trim();
+  const url     = document.getElementById("linkModalInput").value.trim();
   const project = linkEditProject;
   closeLinkModal();
   showToast("Kaydediliyor...", false, true);
   google.script.run
     .withSuccessHandler(() => { showToast("Link güncellendi ✓"); loadData(); })
-    .withFailureHandler(err => showToast("Hata: " + (err.message || err), true, true))
+    .withFailureHandler(err => showToast("Hata: " + err.message, true, true))
     .updateProjectLink(project, url);
 }
 
-// ── Overlay kapatma ──────────────────────────────
-document.getElementById("modalOverlay").addEventListener("click", e => {
-  if (e.target === e.currentTarget) closeModal();
-});
-document.getElementById("addProjectOverlay").addEventListener("click", e => {
-  if (e.target === e.currentTarget) closeAddProjectModal();
-});
-document.getElementById("linkModalOverlay").addEventListener("click", e => {
-  if (e.target === e.currentTarget) closeLinkModal();
+// ── Helpers ────────────────────────────────────────────────────────────────
+function msClass(val, currentWeek) {
+  if (!val) return "s-empty";
+  const l = val.toLowerCase();
+  if (l === "done") return "s-done";
+  if (l === "na" || l === "tbd" || l === "n/a") return "s-empty";
+  const m = val.match(/^[Ww]?(\d+)$/);
+  if (!m) return "s-future";
+  const w = parseInt(m[1]);
+  if (w < currentWeek)  return "s-overdue";
+  if (w === currentWeek) return "s-current";
+  return "s-future";
+}
+
+function showToast(msg, isError, persist) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "toast show" + (isError ? " error" : "");
+  if (!persist) setTimeout(() => t.className = "toast", isError ? 6000 : 2500);
+}
+
+function enc(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function safeId(s) {
+  return String(s).replace(/[^a-zA-Z0-9]/g,"_");
+}
+
+// Overlay close on backdrop click
+["msModalOverlay","addProjectOverlay","linkModalOverlay"].forEach(id => {
+  document.getElementById(id).addEventListener("click", e => {
+    if (e.target === e.currentTarget) e.target.classList.remove("show");
+  });
 });
 </script>
 </body>
