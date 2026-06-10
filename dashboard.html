@@ -145,6 +145,28 @@
     font-size: 0.87rem;
   }
 
+  .project-link {
+    color: #c8d8f0;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.15s;
+  }
+
+  .project-link:hover {
+    color: #7eb3ff;
+    text-decoration: underline;
+  }
+
+  .project-link .link-icon {
+    opacity: 0;
+    font-size: 0.75rem;
+    transition: opacity 0.15s;
+  }
+
+  td:first-child:hover .link-icon { opacity: 1; }
+
   .milestone-cell {
     cursor: pointer;
     border-radius: 6px;
@@ -373,7 +395,10 @@ function renderTable(projects, milestones, currentWeek) {
 
   // Rows
   body.innerHTML = projects.map(p => {
-    let row = `<tr data-project="${esc(p.name)}"><td>${esc(p.name)}</td>`;
+    const nameCell = p.url
+      ? `<a class="project-link" href="${esc(p.url)}" target="_blank">${esc(p.name)}<span class="link-icon">↗</span></a>`
+      : esc(p.name);
+    let row = `<tr data-project="${esc(p.name)}"><td>${nameCell}</td>`;
     milestones.forEach(m => {
       const val = p.milestones[m] || "";
       const cls = getCellClass(val, currentWeek);

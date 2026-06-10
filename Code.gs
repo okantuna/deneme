@@ -13,15 +13,22 @@ function getDashboardData() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName(SHEET_NAME);
   const data = sheet.getDataRange().getValues();
+  const lastRow = data.length;
 
-  // Row 0 = headers, Row 1+ = projects
-  const headers = data[0]; // e.g. ["Project", "CA", "Prod. Def.", ...]
+  const headers = data[0];
 
   const projects = [];
-  for (let i = 1; i < data.length; i++) {
+  for (let i = 1; i < lastRow; i++) {
     const row = data[i];
     const projectName = row[0];
     if (!projectName) continue;
+
+    // RichText link'i oku (sağ tık → Link ekle)
+    let projectUrl = "";
+    try {
+      const richText = sheet.getRange(i + 1, 1).getRichTextValue();
+      projectUrl = richText.getLinkUrl() || "";
+    } catch (e) {}
 
     const milestones = {};
     for (let j = 1; j < headers.length; j++) {
@@ -31,7 +38,7 @@ function getDashboardData() {
       }
     }
 
-    projects.push({ name: projectName, milestones });
+    projects.push({ name: projectName, url: projectUrl, milestones });
   }
 
   const currentWeek = getCurrentWeekNumber();
