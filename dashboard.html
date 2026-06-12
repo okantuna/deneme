@@ -387,17 +387,23 @@ tr.detail-row td {
   <!-- Header -->
   <header>
     <div class="logo">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 60" height="36" aria-label="Valeo">
-        <!-- Green "Valeo" text -->
-        <text x="8" y="38" font-family="Arial Rounded MT Bold, Arial, Helvetica, sans-serif"
-              font-size="38" font-weight="800" font-style="italic"
-              fill="#5cb400" letter-spacing="-1">Valeo</text>
-        <!-- Grey swoosh wave beneath text -->
-        <path d="M 6 46 Q 50 58 100 50 Q 130 45 154 50" stroke="#7a7a7a" stroke-width="4.5"
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130 52" height="36" aria-label="Valeo">
+        <defs>
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800&amp;display=swap');
+          </style>
+        </defs>
+        <!-- Green "Valeo" italic text -->
+        <text x="4" y="36"
+              font-family="'Nunito', 'Arial Rounded MT Bold', Arial, sans-serif"
+              font-size="36" font-weight="800" font-style="italic"
+              fill="#6ab023" letter-spacing="-0.5">Valeo</text>
+        <!-- Grey swoosh: starts left-low, curves up-right, then down-right -->
+        <path d="M 2 44 C 30 56, 70 40, 128 46" stroke="#8a8a8a" stroke-width="3.5"
               fill="none" stroke-linecap="round"/>
       </svg>
     </div>
-    <h1>L2 Planning</h1>
+    <h1>R&amp;D L2 Planning</h1>
     <span class="header-week" id="headerWeek"></span>
   </header>
 
