@@ -33,13 +33,15 @@ header {
 }
 
 .logo {
-  background: #1c1917;
-  color: #fff;
-  font-weight: 700;
-  font-size: 11px;
-  letter-spacing: 0.3px;
-  padding: 5px 8px;
-  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  height: 32px;
+}
+
+.logo img {
+  height: 28px;
+  width: auto;
+  display: block;
 }
 
 header h1 { font-size: 14px; font-weight: 600; color: #1c1917; }
@@ -384,7 +386,15 @@ tr.detail-row td {
 
   <!-- Header -->
   <header>
-    <div class="logo">R&amp;D</div>
+    <div class="logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40" height="28" aria-label="Valeo">
+        <!-- Blue rectangle background -->
+        <rect width="120" height="40" rx="4" fill="#003DA5"/>
+        <!-- Valeo wordmark in white -->
+        <text x="60" y="27" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700"
+              fill="#ffffff" text-anchor="middle" letter-spacing="1">VALEO</text>
+      </svg>
+    </div>
     <h1>L2 Planning</h1>
     <span class="header-week" id="headerWeek"></span>
   </header>
