@@ -1,0 +1,19 @@
+BU KLASÖRE NE KOYACAKSINIZ
+==========================
+
+Bu klasör ödevin en önemli parçası. İki dosya hazırlayacaksınız:
+
+1) kalici-kurallar.txt
+   Asistanınızın (Gemini ya da Claude) HER cevapta uyacağı kurallar.
+   Bu metni, kullandığınız araçtaki "talimat" alanına da yapıştıracaksınız:
+     - Claude'da: bir "Project" oluşturup talimat alanına,
+     - Gemini'de: bir "Gem" oluşturup talimat alanına.
+   İçinde örnek bir taslak hazır; senaryonuza göre düzenleyin.
+
+2) uretim-standardi.txt
+   Panonun nasıl görüneceğinin standardı: renkler, ekran düzeni, hangi
+   veride hangi grafik. Bu metni araca "bilgi dosyası" olarak yükleyeceksiniz.
+   İçinde örnek bir taslak hazır.
+
+İpucu: İkisini de kısa ve net yazın. Amaç, asistanın her seferinde aynı
+standartta pano üretmesini sağlamak.

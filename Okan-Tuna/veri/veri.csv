@@ -1,0 +1,101 @@
+﻿Tarih;Vardiya;Hat / Makine;Planlanan Süre (dk);Duruş Süresi (dk);Duruş Nedeni;Hedef Hız (Adet/dk);Toplam Üretilen (Adet);Sağlam Ürün (Adet);Hatalı Ürün (Adet);Kullanılabilirlik (A);Performans (P);Kalite (Q);OEE
+2026-05-01;Vardiya 1;S1 Montaj Hattı;480;28;Ayar / Kalibrasyon;10;4.342;4.293;49;94,2%;96,1%;98,9%;89,4%
+2026-05-01;Vardiya 2;S1 Montaj Hattı;480;112;Mekanik Arıza (Motor);10;3.493;3.362;131;76,7%;94,9%;96,2%;70,0%
+2026-05-01;Vardiya 3;S1 Montaj Hattı;480;9;Yok;10;4.543;4.466;77;98,1%;96,5%;98,3%;93,0%
+2026-05-02;Vardiya 1;S1 Montaj Hattı;480;7;Yok;10;4.456;4.401;55;98,5%;94,2%;98,8%;91,7%
+2026-05-02;Vardiya 2;S1 Montaj Hattı;480;19;Yemek ve Dinlenme Molası;10;4.380;4.224;156;96,0%;95,0%;96,4%;88,0%
+2026-05-02;Vardiya 3;S1 Montaj Hattı;480;56;Hammadde Gecikmesi;10;4.144;4.072;72;88,3%;97,7%;98,3%;84,8%
+2026-05-03;Vardiya 1;S1 Montaj Hattı;480;35;Ayar / Kalibrasyon;10;4.321;4.267;54;92,7%;97,1%;98,8%;88,9%
+2026-05-03;Vardiya 2;S1 Montaj Hattı;480;116;Elektrik Arızası (Sensör);10;3.312;3.204;108;75,8%;91,0%;96,7%;66,8%
+2026-05-03;Vardiya 3;S1 Montaj Hattı;480;65;Hammadde Gecikmesi;10;3.902;3.839;63;86,5%;94,0%;98,4%;80,0%
+2026-05-04;Vardiya 1;S1 Montaj Hattı;480;6;Yok;10;4.622;4.586;36;98,8%;97,5%;99,2%;95,5%
+2026-05-04;Vardiya 2;S1 Montaj Hattı;480;54;Yazılım / PLC Hatasi;10;3.998;3.877;121;88,8%;93,8%;97,0%;80,8%
+2026-05-04;Vardiya 3;S1 Montaj Hattı;480;14;Yok;10;4.465;4.392;73;97,1%;95,8%;98,4%;91,5%
+2026-05-05;Vardiya 1;S1 Montaj Hattı;480;0;Yok;10;4.720;4.669;51;100,0%;98,3%;98,9%;97,3%
+2026-05-05;Vardiya 2;S1 Montaj Hattı;480;113;Mekanik Arıza (Motor);10;3.581;3.464;117;76,5%;97,6%;96,7%;72,2%
+2026-05-05;Vardiya 3;S1 Montaj Hattı;480;2;Yok;10;4.647;4.573;74;99,6%;97,2%;98,4%;95,3%
+2026-05-06;Vardiya 1;S1 Montaj Hattı;480;4;Yok;10;4.578;4.537;41;99,2%;96,2%;99,1%;94,5%
+2026-05-06;Vardiya 2;S1 Montaj Hattı;480;126;Mekanik Arıza (Konveyör);10;3.264;3.159;105;73,8%;92,2%;96,8%;65,8%
+2026-05-06;Vardiya 3;S1 Montaj Hattı;480;14;Yok;10;4.545;4.485;60;97,1%;97,5%;98,7%;93,4%
+2026-05-07;Vardiya 1;S1 Montaj Hattı;480;28;Operatör Değişimi;10;4.263;4.183;80;94,2%;94,3%;98,1%;87,1%
+2026-05-07;Vardiya 2;S1 Montaj Hattı;480;15;Yemek ve Dinlenme Molası;10;4.500;4.350;150;96,9%;96,8%;96,7%;90,6%
+2026-05-07;Vardiya 3;S1 Montaj Hattı;480;3;Yok;10;4.525;4.466;59;99,4%;94,9%;98,7%;93,0%
+2026-05-08;Vardiya 1;S1 Montaj Hattı;480;4;Yok;10;4.634;4.545;89;99,2%;97,4%;98,1%;94,7%
+2026-05-08;Vardiya 2;S1 Montaj Hattı;480;74;Elektrik Arızası (Sensör);10;3.905;3.782;123;84,6%;96,2%;96,9%;78,8%
+2026-05-08;Vardiya 3;S1 Montaj Hattı;480;0;Yok;10;4.744;4.715;29;100,0%;98,8%;99,4%;98,2%
+2026-05-09;Vardiya 1;S1 Montaj Hattı;480;55;Operatör Değişimi;10;4.099;4.050;49;88,5%;96,4%;98,8%;84,4%
+2026-05-09;Vardiya 2;S1 Montaj Hattı;480;82;Mekanik Arıza (Konveyör);10;3.760;3.623;137;82,9%;94,5%;96,4%;75,5%
+2026-05-09;Vardiya 3;S1 Montaj Hattı;480;12;Yok;10;4.533;4.484;49;97,5%;96,9%;98,9%;93,4%
+2026-05-10;Vardiya 1;S1 Montaj Hattı;480;31;Operatör Değişimi;10;4.230;4.148;82;93,5%;94,2%;98,1%;86,4%
+2026-05-10;Vardiya 2;S1 Montaj Hattı;480;95;Mekanik Arıza (Konveyör);10;3.747;3.572;175;80,2%;97,3%;95,3%;74,4%
+2026-05-10;Vardiya 3;S1 Montaj Hattı;480;13;Yok;10;4.499;4.419;80;97,3%;96,3%;98,2%;92,1%
+2026-05-11;Vardiya 1;S1 Montaj Hattı;480;47;Operatör Değişimi;10;4.083;4.032;51;90,2%;94,3%;98,8%;84,0%
+2026-05-11;Vardiya 2;S1 Montaj Hattı;480;55;Yazılım / PLC Hatasi;10;4.087;3.950;137;88,5%;96,2%;96,6%;82,3%
+2026-05-11;Vardiya 3;S1 Montaj Hattı;480;9;Yok;10;4.656;4.621;35;98,1%;98,9%;99,2%;96,3%
+2026-05-12;Vardiya 1;S1 Montaj Hattı;480;19;Operatör Değişimi;10;4.536;4.508;28;96,0%;98,4%;99,4%;93,9%
+2026-05-12;Vardiya 2;S1 Montaj Hattı;480;113;Mekanik Arıza (Konveyör);10;3.492;3.341;151;76,5%;95,1%;95,7%;69,6%
+2026-05-12;Vardiya 3;S1 Montaj Hattı;480;9;Yok;10;4.649;4.567;82;98,1%;98,7%;98,2%;95,1%
+2026-05-13;Vardiya 1;S1 Montaj Hattı;480;9;Yok;10;4.474;4.415;59;98,1%;95,0%;98,7%;92,0%
+2026-05-13;Vardiya 2;S1 Montaj Hattı;480;99;Mekanik Arıza (Konveyör);10;3.667;3.553;114;79,4%;96,2%;96,9%;74,0%
+2026-05-13;Vardiya 3;S1 Montaj Hattı;480;15;Yok;10;4.582;4.523;59;96,9%;98,5%;98,7%;94,2%
+2026-05-14;Vardiya 1;S1 Montaj Hattı;480;12;Yok;10;4.570;4.516;54;97,5%;97,6%;98,8%;94,1%
+2026-05-14;Vardiya 2;S1 Montaj Hattı;480;70;Mekanik Arıza (Motor);10;3.718;3.593;125;85,4%;90,7%;96,6%;74,9%
+2026-05-14;Vardiya 3;S1 Montaj Hattı;480;13;Yok;10;4.506;4.424;82;97,3%;96,5%;98,2%;92,2%
+2026-05-15;Vardiya 1;S1 Montaj Hattı;480;3;Yok;10;4.671;4.580;91;99,4%;97,9%;98,1%;95,4%
+2026-05-15;Vardiya 2;S1 Montaj Hattı;480;54;Yazılım / PLC Hatasi;10;4.165;4.033;132;88,8%;97,8%;96,8%;84,0%
+2026-05-15;Vardiya 3;S1 Montaj Hattı;480;6;Yok;10;4.492;4.466;26;98,8%;94,8%;99,4%;93,0%
+2026-05-16;Vardiya 1;S1 Montaj Hattı;480;2;Yok;10;4.584;4.492;92;99,6%;95,9%;98,0%;93,6%
+2026-05-16;Vardiya 2;S1 Montaj Hattı;480;51;Yazılım / PLC Hatasi;10;4.096;3.961;135;89,4%;95,5%;96,7%;82,5%
+2026-05-16;Vardiya 3;S1 Montaj Hattı;480;52;Hammadde Gecikmesi;10;4.082;4.045;37;89,2%;95,4%;99,1%;84,3%
+2026-05-17;Vardiya 1;S1 Montaj Hattı;480;48;Operatör Değişimi;10;4.228;4.167;61;90,0%;97,9%;98,6%;86,8%
+2026-05-17;Vardiya 2;S1 Montaj Hattı;480;74;Mekanik Arıza (Konveyör);10;3.653;3.526;127;84,6%;90,0%;96,5%;73,5%
+2026-05-17;Vardiya 3;S1 Montaj Hattı;480;0;Yok;10;4.751;4.686;65;100,0%;99,0%;98,6%;97,6%
+2026-05-18;Vardiya 1;S1 Montaj Hattı;480;38;Operatör Değişimi;10;4.238;4.177;61;92,1%;95,9%;98,6%;87,0%
+2026-05-18;Vardiya 2;S1 Montaj Hattı;480;123;Mekanik Arıza (Motor);10;3.379;3.274;105;74,4%;94,6%;96,9%;68,2%
+2026-05-18;Vardiya 3;S1 Montaj Hattı;480;8;Yok;10;4.587;4.506;81;98,3%;97,2%;98,2%;93,9%
+2026-05-19;Vardiya 1;S1 Montaj Hattı;480;48;Ayar / Kalibrasyon;10;4.154;4.081;73;90,0%;96,2%;98,2%;85,0%
+2026-05-19;Vardiya 2;S1 Montaj Hattı;480;51;Yemek ve Dinlenme Molası;10;3.782;3.654;128;89,4%;88,2%;96,6%;76,1%
+2026-05-19;Vardiya 3;S1 Montaj Hattı;480;11;Yok;10;4.477;4.431;46;97,7%;95,5%;99,0%;92,3%
+2026-05-20;Vardiya 1;S1 Montaj Hattı;480;55;Ayar / Kalibrasyon;10;4.074;4.004;70;88,5%;95,9%;98,3%;83,4%
+2026-05-20;Vardiya 2;S1 Montaj Hattı;480;126;Mekanik Arıza (Motor);10;3.450;3.308;142;73,8%;97,5%;95,9%;68,9%
+2026-05-20;Vardiya 3;S1 Montaj Hattı;480;11;Yok;10;4.597;4.572;25;97,7%;98,0%;99,5%;95,3%
+2026-05-21;Vardiya 1;S1 Montaj Hattı;480;30;Ayar / Kalibrasyon;10;4.424;4.338;86;93,8%;98,3%;98,1%;90,4%
+2026-05-21;Vardiya 2;S1 Montaj Hattı;480;49;Yemek ve Dinlenme Molası;10;4.095;3.927;168;89,8%;95,0%;95,9%;81,8%
+2026-05-21;Vardiya 3;S1 Montaj Hattı;480;5;Yok;10;4.594;4.560;34;99,0%;96,7%;99,3%;95,0%
+2026-05-22;Vardiya 1;S1 Montaj Hattı;480;29;Ayar / Kalibrasyon;10;4.393;4.306;87;94,0%;97,4%;98,0%;89,7%
+2026-05-22;Vardiya 2;S1 Montaj Hattı;480;102;Mekanik Arıza (Konveyör);10;3.651;3.541;110;78,8%;96,6%;97,0%;73,8%
+2026-05-22;Vardiya 3;S1 Montaj Hattı;480;13;Yok;10;4.471;4.390;81;97,3%;95,7%;98,2%;91,5%
+2026-05-23;Vardiya 1;S1 Montaj Hattı;480;14;Yok;10;4.557;4.490;67;97,1%;97,8%;98,5%;93,5%
+2026-05-23;Vardiya 2;S1 Montaj Hattı;480;29;Yemek ve Dinlenme Molası;10;4.324;4.172;152;94,0%;95,9%;96,5%;86,9%
+2026-05-23;Vardiya 3;S1 Montaj Hattı;480;10;Yok;10;4.437;4.396;41;97,9%;94,4%;99,1%;91,6%
+2026-05-24;Vardiya 1;S1 Montaj Hattı;480;12;Yok;10;4.447;4.372;75;97,5%;95,0%;98,3%;91,1%
+2026-05-24;Vardiya 2;S1 Montaj Hattı;480;124;Mekanik Arıza (Motor);10;3.432;3.304;128;74,2%;96,4%;96,3%;68,8%
+2026-05-24;Vardiya 3;S1 Montaj Hattı;480;2;Yok;10;4.687;4.606;81;99,6%;98,1%;98,3%;96,0%
+2026-05-25;Vardiya 1;S1 Montaj Hattı;480;38;Operatör Değişimi;10;4.199;4.134;65;92,1%;95,0%;98,5%;86,1%
+2026-05-25;Vardiya 2;S1 Montaj Hattı;480;53;Yemek ve Dinlenme Molası;10;4.155;3.963;192;89,0%;97,3%;95,4%;82,6%
+2026-05-25;Vardiya 3;S1 Montaj Hattı;480;8;Yok;10;4.571;4.516;55;98,3%;96,8%;98,8%;94,1%
+2026-05-26;Vardiya 1;S1 Montaj Hattı;480;4;Yok;10;4.628;4.573;55;99,2%;97,2%;98,8%;95,3%
+2026-05-26;Vardiya 2;S1 Montaj Hattı;480;108;Mekanik Arıza (Konveyör);10;3.318;3.201;117;77,5%;89,2%;96,5%;66,7%
+2026-05-26;Vardiya 3;S1 Montaj Hattı;480;4;Yok;10;4.563;4.499;64;99,2%;95,9%;98,6%;93,7%
+2026-05-27;Vardiya 1;S1 Montaj Hattı;480;37;Operatör Değişimi;10;4.224;4.199;25;92,3%;95,3%;99,4%;87,5%
+2026-05-27;Vardiya 2;S1 Montaj Hattı;480;99;Mekanik Arıza (Konveyör);10;3.685;3.515;170;79,4%;96,7%;95,4%;73,2%
+2026-05-27;Vardiya 3;S1 Montaj Hattı;480;7;Yok;10;4.461;4.431;30;98,5%;94,3%;99,3%;92,3%
+2026-05-28;Vardiya 1;S1 Montaj Hattı;480;30;Operatör Değişimi;10;4.312;4.273;39;93,8%;95,8%;99,1%;89,0%
+2026-05-28;Vardiya 2;S1 Montaj Hattı;480;78;Mekanik Arıza (Motor);10;3.584;3.442;142;83,8%;89,2%;96,0%;71,7%
+2026-05-28;Vardiya 3;S1 Montaj Hattı;480;8;Yok;10;4.448;4.375;73;98,3%;94,2%;98,4%;91,1%
+2026-05-29;Vardiya 1;S1 Montaj Hattı;480;3;Yok;10;4.588;4.519;69;99,4%;96,2%;98,5%;94,1%
+2026-05-29;Vardiya 2;S1 Montaj Hattı;480;30;Yemek ve Dinlenme Molası;10;4.038;3.860;178;93,8%;89,7%;95,6%;80,4%
+2026-05-29;Vardiya 3;S1 Montaj Hattı;480;59;Hammadde Gecikmesi;10;4.000;3.941;59;87,7%;95,0%;98,5%;82,1%
+2026-05-30;Vardiya 1;S1 Montaj Hattı;480;5;Yok;10;4.506;4.468;38;99,0%;94,9%;99,2%;93,1%
+2026-05-30;Vardiya 2;S1 Montaj Hattı;480;30;Yemek ve Dinlenme Molası;10;3.962;3.784;178;93,8%;88,0%;95,5%;78,8%
+2026-05-30;Vardiya 3;S1 Montaj Hattı;480;65;Hammadde Gecikmesi;10;3.919;3.872;47;86,5%;94,4%;98,8%;80,7%
+2026-05-31;Vardiya 1;S1 Montaj Hattı;480;14;Yok;10;4.517;4.461;56;97,1%;96,9%;98,8%;92,9%
+2026-05-31;Vardiya 2;S1 Montaj Hattı;480;76;Mekanik Arıza (Motor);10;3.658;3.513;145;84,2%;90,5%;96,0%;73,2%
+2026-05-31;Vardiya 3;S1 Montaj Hattı;480;13;Yok;10;4.478;4.406;72;97,3%;95,9%;98,4%;91,8%
+2026-06-01;Vardiya 1;S1 Montaj Hattı;480;40;Ayar / Kalibrasyon;10;4.258;4.232;26;91,7%;96,8%;99,4%;88,2%
+2026-06-01;Vardiya 2;S1 Montaj Hattı;480;62;Elektrik Arızası (Sensör);10;3.782;3.637;145;87,1%;90,5%;96,2%;75,8%
+2026-06-01;Vardiya 3;S1 Montaj Hattı;480;10;Yok;10;4.504;4.468;36;97,9%;95,8%;99,2%;93,1%
+2026-06-02;Vardiya 1;S1 Montaj Hattı;480;1;Yok;10;4.637;4.552;85;99,8%;96,8%;98,2%;94,8%
+2026-06-02;Vardiya 2;S1 Montaj Hattı;480;118;Elektrik Arızası (Sensör);10;3.467;3.302;165;75,4%;95,8%;95,2%;68,8%
+2026-06-02;Vardiya 3;S1 Montaj Hattı;480;2;Yok;10;4.559;4.532;27;99,6%;95,4%;99,4%;94,4%
+2026-06-03;Vardiya 1;S1 Montaj Hattı;480;7;Yok;10;4.675;4.583;92;98,5%;98,8%;98,0%;95,5%

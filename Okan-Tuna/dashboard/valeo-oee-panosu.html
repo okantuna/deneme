@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VALEO Üretim Panosu — OEE</title>
+<style>
+  :root{
+    --bg:#0E1318;
+    --surface:#161D26;
+    --surface-2:#1C2530;
+    --border:#2B3645;
+    --text:#E8EDF3;
+    --text-dim:#94A3B3;
+    --blue:#4C8DFF;
+    --blue-soft:rgba(76,141,255,0.16);
+    --gray-ref:#8B95A1;
+    --good:#34D399;
+    --warn:#FBBF24;
+    --bad:#F87171;
+    --bad-soft:rgba(248,113,113,0.14);
+    --good-soft:rgba(52,211,153,0.14);
+    --warn-soft:rgba(251,191,36,0.14);
+    --radius:6px;
+    --mono:'SFMono-Regular','Roboto Mono','Consolas','Liberation Mono',Menlo,monospace;
+    --sans:-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    font-size:14px;
+    line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+  }
+  #app{max-width:1180px;margin:0 auto;padding:20px 20px 60px;}
+
+  .topbar{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:14px;border-bottom:1px solid var(--border);padding-bottom:16px;margin-bottom:18px;}
+  .eyebrow{font-size:11px;letter-spacing:0.12em;color:var(--text-dim);font-weight:600;margin-bottom:4px;}
+  .topbar h1{font-size:22px;margin:0;font-weight:700;letter-spacing:-0.01em;}
+  .topbar-right{display:flex;align-items:center;gap:16px;}
+  .updated{display:flex;flex-direction:column;align-items:flex-end;font-family:var(--mono);}
+  .updated-label{font-size:11px;color:var(--text-dim);font-family:var(--sans);}
+  .updated-value{font-size:13px;color:var(--text);}
+  .btn-refresh{
+    display:flex;align-items:center;gap:6px;
+    background:var(--surface-2);border:1px solid var(--border);color:var(--text);
+    padding:8px 14px;border-radius:var(--radius);font-size:13px;font-weight:600;
+    cursor:pointer;transition:background .15s ease;
+  }
+  .btn-refresh:hover{background:#243040;}
+  .btn-refresh:focus-visible, button:focus-visible, select:focus-visible{outline:2px solid var(--blue);outline-offset:2px;}
+  .btn-refresh.spinning svg{animation:spin 0.9s linear infinite;}
+  @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:16px;overflow-x:auto;}
+  .tab{background:none;border:none;color:var(--text-dim);padding:10px 16px;font-size:13.5px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;}
+  .tab:hover{color:var(--text);}
+  .tab.active{color:var(--blue);border-bottom-color:var(--blue);}
+
+  .filterbar{display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap;margin-bottom:18px;}
+  .filter-group{display:flex;flex-direction:column;gap:4px;}
+  .filter-group label{font-size:11px;color:var(--text-dim);font-weight:600;letter-spacing:0.02em;}
+  .filter-group select{
+    background:var(--surface);border:1px solid var(--border);color:var(--text);
+    padding:7px 10px;border-radius:var(--radius);font-size:13px;min-width:140px;
+  }
+  .filter-note{font-size:12px;color:var(--text-dim);}
+
+  .status-banner{padding:12px 16px;border-radius:var(--radius);font-size:13px;margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+  .status-banner.loading{background:var(--surface);border:1px solid var(--border);color:var(--text-dim);}
+  .status-banner.error{background:var(--bad-soft);border:1px solid rgba(248,113,113,0.4);color:#FFD2D2;}
+  .status-banner button{margin-left:auto;background:var(--bad);border:none;color:#1A0707;font-weight:700;padding:6px 12px;border-radius:4px;cursor:pointer;font-size:12px;}
+  .spinner{width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--text-dim);border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0;}
+
+  .screen{display:none;}
+  .screen.active{display:block;}
+
+  .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
+  @media (max-width:760px){.kpi-row{grid-template-columns:repeat(2,1fr);}}
+  .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;}
+  .kpi-label{font-size:11.5px;color:var(--text-dim);font-weight:600;letter-spacing:0.02em;margin-bottom:8px;}
+  .kpi-value{font-family:var(--mono);font-size:26px;font-weight:700;letter-spacing:-0.01em;}
+  .kpi-delta{display:flex;align-items:center;gap:5px;font-size:12px;margin-top:6px;font-weight:600;}
+  .kpi-delta.up{color:var(--good);}
+  .kpi-delta.down{color:var(--bad);}
+  .kpi-delta.flat{color:var(--text-dim);}
+  .kpi-empty{color:var(--text-dim);font-size:13px;}
+
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:18px;}
+  .panel-head{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:14px;}
+  .panel-head h2{font-size:14.5px;margin:0;font-weight:700;}
+  .panel-sub{font-size:12px;color:var(--text-dim);font-weight:500;margin-left:8px;}
+  .legend{display:flex;gap:14px;font-size:12px;color:var(--text-dim);}
+  .legend-item{display:flex;align-items:center;gap:6px;}
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
+  .dot-blue{background:var(--blue);}
+  .dot-gray{background:var(--gray-ref);}
+  .dot-gray-outline{background:transparent;border:1.5px dashed var(--gray-ref);}
+
+  .chart-wrap{position:relative;width:100%;}
+  .chart-tall{height:300px;}
+
+  .funnel-wrap{display:flex;flex-direction:column;gap:14px;padding:8px 0 4px;}
+  .funnel-stage{position:relative;}
+  .funnel-stage-label{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px;color:var(--text-dim);}
+  .funnel-stage-label strong{color:var(--text);font-family:var(--mono);font-weight:700;}
+  .funnel-track{position:relative;height:38px;background:var(--surface-2);border-radius:4px;overflow:hidden;}
+  .funnel-bar-ref{position:absolute;top:0;left:0;height:100%;background:transparent;border-right:2px dashed var(--gray-ref);}
+  .funnel-bar-cur{position:absolute;top:0;left:0;height:100%;background:var(--blue);border-radius:4px 0 0 4px;transition:width .3s ease;}
+  .funnel-loss{font-size:11.5px;color:var(--bad);margin-top:5px;text-align:right;}
+
+  .table-wrap{max-height:520px;overflow:auto;border:1px solid var(--border);border-radius:var(--radius);}
+  table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  thead th{position:sticky;top:0;background:var(--surface-2);color:var(--text-dim);text-align:left;padding:9px 10px;font-weight:600;font-size:11.5px;letter-spacing:0.02em;border-bottom:1px solid var(--border);}
+  tbody td{padding:8px 10px;border-bottom:1px solid var(--border);font-family:var(--mono);}
+  tbody tr:hover{background:var(--surface-2);}
+  .tag{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;font-family:var(--sans);}
+  .tag-good{background:var(--good-soft);color:var(--good);}
+  .tag-warn{background:var(--warn-soft);color:var(--warn);}
+  .tag-bad{background:var(--bad-soft);color:var(--bad);}
+
+  .empty-state{padding:40px 20px;text-align:center;color:var(--text-dim);font-size:13px;}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="eyebrow">VALEO ÜRETİM PANOSU</div>
+      <h1>OEE — S1 Montaj Hattı</h1>
+    </div>
+    <div class="topbar-right">
+      <div class="updated">
+        <span class="updated-label">Son güncelleme</span>
+        <span class="updated-value" id="updatedValue">—</span>
+      </div>
+      <button class="btn-refresh" id="refreshBtn" title="Veriyi yeniden oku">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg>
+        Yenile
+      </button>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-tab="genel">Genel Bakış</button>
+    <button class="tab" data-tab="kayip">Kayıp Analizi</button>
+    <button class="tab" data-tab="vardiya">Vardiya Karşılaştırması</button>
+    <button class="tab" data-tab="detay">Detay Tablo</button>
+  </nav>
+
+  <div class="filterbar">
+    <div class="filter-group">
+      <label for="rangeSelect">Dönem</label>
+      <select id="rangeSelect">
+        <option value="7">Son 7 Gün</option>
+        <option value="14" selected>Son 14 Gün</option>
+        <option value="30">Son 30 Gün</option>
+        <option value="all">Tüm Dönem</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="shiftSelect">Vardiya</label>
+      <select id="shiftSelect">
+        <option value="all" selected>Tümü</option>
+        <option value="1">Vardiya 1</option>
+        <option value="2">Vardiya 2</option>
+        <option value="3">Vardiya 3</option>
+      </select>
+    </div>
+    <div class="filter-note" id="filterNote"></div>
+  </div>
+
+  <div id="statusBanner" class="status-banner" hidden></div>
+
+  <main id="screens">
+
+    <section class="screen active" id="screen-genel">
+      <div class="kpi-row" id="kpiGenel"></div>
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Günlük OEE Eğilimi</h2>
+          <div class="legend">
+            <span class="legend-item"><i class="dot dot-blue"></i>Bu dönem</span>
+            <span class="legend-item"><i class="dot dot-gray"></i>Önceki dönem (referans)</span>
+          </div>
+        </div>
+        <div class="chart-wrap chart-tall"><canvas id="trendChart"></canvas></div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-kayip">
+      <div class="kpi-row" id="kpiKayip"></div>
+      <div class="panel">
+        <div class="panel-head">
+          <h2>OEE Kayıp Köprüsü <span class="panel-sub">Teorik kapasiteden sağlam ürüne</span></h2>
+          <div class="legend">
+            <span class="legend-item"><i class="dot dot-blue"></i>Bu dönem</span>
+            <span class="legend-item"><i class="dot dot-gray-outline"></i>Önceki dönem (referans)</span>
+          </div>
+        </div>
+        <div id="funnelWrap" class="funnel-wrap"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Duruş Nedenleri <span class="panel-sub">Toplam duruş dakikasına göre</span></h2>
+        </div>
+        <div class="chart-wrap chart-tall"><canvas id="paretoChart"></canvas></div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-vardiya">
+      <div class="kpi-row" id="kpiVardiya"></div>
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Vardiyalara Göre OEE / A / P / Q</h2>
+          <div class="legend">
+            <span class="legend-item"><i class="dot dot-blue"></i>Bu dönem</span>
+            <span class="legend-item"><i class="dot dot-gray"></i>Önceki dönem (referans)</span>
+          </div>
+        </div>
+        <div class="chart-wrap chart-tall"><canvas id="shiftChart"></canvas></div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-detay">
+      <div class="kpi-row" id="kpiDetay"></div>
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Satır Bazlı Veri</h2>
+          <div class="panel-sub" id="tableCount"></div>
+        </div>
+        <div class="table-wrap">
+          <table id="detailTable">
+            <thead>
+              <tr>
+                <th>Tarih</th><th>Vardiya</th><th>Hat</th><th>Duruş Nedeni</th>
+                <th>A</th><th>P</th><th>Q</th><th>OEE</th><th>Durum</th>
+              </tr>
+            </thead>
+            <tbody id="detailTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script>
+/* ============================================================
+   VALEO OEE PANOSU — uygulama mantığı
+   Veri panonun içine sabit yazılmaz; her "Yenile" / sayfa yüklemede
+   bağlı Google Drive kaynağından (Anthropic API + Google Drive MCP)
+   canlı okunur.
+   ============================================================ */
+
+const CONFIG = {
+  fileId: '1B1lst0P8QtJGmbrh8B80iqMGDp-NknGysSF3bGort78',
+  sheetName: 'Üretim Ham Verileri',
+  model: 'claude-sonnet-4-6'
+};
+
+const SYSTEM_PROMPT = `Sen bir veri çıkarma motorusun. Sana verilen talimatları uygula ve SADECE istenen JSON nesnesini döndür. Açıklama, yorum, markdown kod bloğu işareti veya başka hiçbir metin ekleme. Yanıtının ilk karakteri "{" olmalı, son karakteri "}" olmalı.`;
+
+function buildUserPrompt(){
+  return `Google Drive'daki şu E-Tabloyu oku: fileId = "${CONFIG.fileId}". İlgili sayfa: "${CONFIG.sheetName}".
+
+Tablodaki TÜM satırları, tarihe göre artan sırada, aşağıdaki JSON şemasına dönüştür ve SADECE bu JSON'u döndür:
+
+{"guncellemeTarihi":"<şu anki ISO 8601 zaman damgası>","satirSayisi":<toplam satır sayısı>,"satirlar":[["YYYY-MM-DD",vardiyaNo,"durusNedeni",kullanilabilirlikYuzde,performansYuzde,kaliteYuzde,oeeYuzde,durusSuresiDk,planlananSureDk,hedefHizAdetDk,toplamUretilenAdet,saglamUrunAdet,hataliUrunAdet], ...]}
+
+Kurallar:
+- vardiyaNo: "Vardiya 1" -> 1, "Vardiya 2" -> 2, "Vardiya 3" -> 3 (tam sayı).
+- Yüzdeleri ondalık sayı yaz (örn. "93,5%" -> 93.5). Virgül kullanma, nokta kullan.
+- Binlik nokta ayraçlarını kaldır (örn. "4.444" -> 4444).
+- Duruş Nedeni boşsa "Yok" yaz.
+- Şema dışında hiçbir alan, açıklama ya da metin ekleme.`;
+}
+
+const state = {
+  status: 'loading', // loading | ready | error
+  errorMsg: '',
+  rows: [],          // {tarih,vardiya,neden,a,p,q,oee,durus,planlanan,hedefHiz,uretilen,saglam,hatali}
+  guncellemeTarihi: null,
+  activeTab: 'genel',
+  filters: { range: '14', shift: 'all' }
+};
+
+let trendChart = null, paretoChart = null, shiftChart = null;
+
+/* ---------- yardımcı biçimlendirme ---------- */
+function trDate(iso){
+  const [y,m,d] = iso.split('-');
+  return `${d}.${m}.${y}`;
+}
+function trNumber(n, decimals=0){
+  if(n===null || n===undefined || isNaN(n)) return '—';
+  return Number(n).toLocaleString('tr-TR',{minimumFractionDigits:decimals,maximumFractionDigits:decimals});
+}
+function pct(n){ return n===null||n===undefined||isNaN(n) ? '—' : trNumber(n,1)+'%'; }
+function addDays(dateStr, n){
+  const d = new Date(dateStr+'T00:00:00Z');
+  d.setUTCDate(d.getUTCDate()+n);
+  return d.toISOString().slice(0,10);
+}
+function nowStampTR(){
+  const d = new Date();
+  const dd = String(d.getDate()).padStart(2,'0');
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const yyyy = d.getFullYear();
+  const hh = String(d.getHours()).padStart(2,'0');
+  const mi = String(d.getMinutes()).padStart(2,'0');
+  return `${dd}.${mm}.${yyyy} ${hh}:${mi}`;
+}
+
+/* ---------- esnek JSON ayrıştırma (kesilmiş yanıtlara karşı dayanıklı) ---------- */
+function parseRowsLenient(text){
+  let t = (text||'').trim();
+  t = t.replace(/^```(json)?/i,'').replace(/```$/,'').trim();
+  try{
+    const direct = JSON.parse(t);
+    if(direct && Array.isArray(direct.satirlar)) return direct;
+  }catch(e){ /* devam et: kurtarma dene */ }
+
+  const idx = t.indexOf('"satirlar"');
+  if(idx===-1) return null;
+  const arrStart = t.indexOf('[', idx);
+  if(arrStart===-1) return null;
+  const guncellemeMatch = t.match(/"guncellemeTarihi"\s*:\s*"([^"]+)"/);
+
+  let i = arrStart+1, depth=0, cur='', rows=[];
+  for(; i<t.length; i++){
+    const ch = t[i];
+    if(ch==='['){ depth++; cur+=ch; }
+    else if(ch===']'){
+      if(depth===0) break;
+      depth--; cur+=ch;
+      if(depth===0){
+        try{ rows.push(JSON.parse(cur)); }catch(e){ /* yarım satırı at */ }
+        cur='';
+      }
+    } else if(depth>0){ cur+=ch; }
+  }
+  if(!rows.length) return null;
+  return { satirlar: rows, guncellemeTarihi: guncellemeMatch ? guncellemeMatch[1] : new Date().toISOString() };
+}
+
+function rowsToObjects(rawRows){
+  return rawRows
+    .filter(r=>Array.isArray(r) && r.length>=13)
+    .map(r=>({
+      tarih:r[0], vardiya:Number(r[1]), neden:r[2],
+      a:Number(r[3]), p:Number(r[4]), q:Number(r[5]), oee:Number(r[6]),
+      durus:Number(r[7]), planlanan:Number(r[8]), hedefHiz:Number(r[9]),
+      uretilen:Number(r[10]), saglam:Number(r[11]), hatali:Number(r[12])
+    }))
+    .filter(r=> r.tarih && !isNaN(r.oee));
+}
+
+/* ---------- canlı veri çekme ---------- */
+async function fetchLiveData(){
+  state.status = 'loading';
+  state.errorMsg = '';
+  renderStatus();
+
+  const refreshBtn = document.getElementById('refreshBtn');
+  refreshBtn.classList.add('spinning');
+
+  try{
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: CONFIG.model,
+        max_tokens: 1000,
+        system: SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: buildUserPrompt() }],
+        mcp_servers: [{ type:'url', url:'https://drivemcp.googleapis.com/mcp/v1', name:'google-drive' }]
+      })
+    });
+
+    if(!resp.ok){
+      throw new Error(`Bağlantı hatası (HTTP ${resp.status}). Google Drive bağlantınızın yetkili olduğundan emin olun.`);
+    }
+    const data = await resp.json();
+    const textBlocks = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n');
+    if(!textBlocks.trim()){
+      throw new Error('Veri kaynağından metin yanıtı alınamadı.');
+    }
+    const parsed = parseRowsLenient(textBlocks);
+    if(!parsed || !parsed.satirlar || !parsed.satirlar.length){
+      throw new Error('Veri ayrıştırılamadı. Dosya boş olabilir veya yapı değişmiş olabilir.');
+    }
+    const objs = rowsToObjects(parsed.satirlar);
+    if(!objs.length){
+      throw new Error('Okunan satırlarda geçerli veri bulunamadı.');
+    }
+    state.rows = objs;
+    state.guncellemeTarihi = parsed.guncellemeTarihi || new Date().toISOString();
+    state.status = 'ready';
+  }catch(err){
+    state.status = 'error';
+    state.errorMsg = err && err.message ? err.message : 'Beklenmeyen bir hata oluştu.';
+  }finally{
+    refreshBtn.classList.remove('spinning');
+    renderAll();
+  }
+}
+
+/* ---------- filtreleme ve toplulaştırma ---------- */
+function applyShiftFilter(rows, shiftKey){
+  if(shiftKey==='all') return rows;
+  return rows.filter(r=>r.vardiya===Number(shiftKey));
+}
+function getRangeRows(rows, rangeKey){
+  if(!rows.length) return [];
+  if(rangeKey==='all') return rows;
+  const days = {'7':7,'14':14,'30':30}[rangeKey];
+  const dates = [...new Set(rows.map(r=>r.tarih))].sort();
+  const maxDate = dates[dates.length-1];
+  const cutoff = addDays(maxDate, -(days-1));
+  return rows.filter(r=>r.tarih>=cutoff);
+}
+function getPreviousRangeRows(rows, rangeKey){
+  if(rangeKey==='all' || !rows.length) return [];
+  const days = {'7':7,'14':14,'30':30}[rangeKey];
+  const dates = [...new Set(rows.map(r=>r.tarih))].sort();
+  const maxDate = dates[dates.length-1];
+  const curStart = addDays(maxDate, -(days-1));
+  const prevEnd = addDays(curStart, -1);
+  const prevStart = addDays(prevEnd, -(days-1));
+  return rows.filter(r=>r.tarih>=prevStart && r.tarih<=prevEnd);
+}
+function aggregate(rows){
+  if(!rows.length) return null;
+  const n = rows.length;
+  const sum = f => rows.reduce((s,r)=>s+f(r),0);
+  return {
+    n,
+    a: sum(r=>r.a)/n, p: sum(r=>r.p)/n, q: sum(r=>r.q)/n, oee: sum(r=>r.oee)/n,
+    planlanan: sum(r=>r.planlanan), durus: sum(r=>r.durus),
+    hedefHiz: sum(r=>r.hedefHiz)/n,
+    uretilen: sum(r=>r.uretilen), saglam: sum(r=>r.saglam), hatali: sum(r=>r.hatali)
+  };
+}
+function dailyAggregate(rows){
+  const byDate = {};
+  rows.forEach(r=>{ (byDate[r.tarih] = byDate[r.tarih]||[]).push(r); });
+  return Object.keys(byDate).sort().map(tarih=>({ tarih, ...aggregate(byDate[tarih]) }));
+}
+function shiftAggregate(rows){
+  return [1,2,3].map(v=>{
+    const sub = rows.filter(r=>r.vardiya===v);
+    const agg = aggregate(sub);
+    return { vardiya: v, agg };
+  });
+}
+function downtimeAggregate(rows){
+  const byReason = {};
+  rows.forEach(r=>{
+    if(!r.neden || r.neden==='Yok' || r.durus<=0) return;
+    if(!byReason[r.neden]) byReason[r.neden] = { neden:r.neden, dakika:0, adet:0 };
+    byReason[r.neden].dakika += r.durus;
+    byReason[r.neden].adet += 1;
+  });
+  return Object.values(byReason).sort((a,b)=>b.dakika-a.dakika).slice(0,8);
+}
+function funnelStages(agg){
+  if(!agg) return null;
+  const teorikMax = agg.planlanan * agg.hedefHiz;
+  const durusKaybi = agg.durus * agg.hedefHiz;
+  const potansiyel = Math.max(0, teorikMax - durusKaybi);
+  const performansKaybi = Math.max(0, potansiyel - agg.uretilen);
+  const kaliteKaybi = agg.hatali;
+  return [
+    { key:'teorik', label:'Teorik Maks. Kapasite', sub:'Planlanan Süre × Hedef Hız', value: teorikMax },
+    { key:'potansiyel', label:'Çalışma Potansiyeli', sub:`Duruş Kaybı: −${trNumber(durusKaybi)} adet`, value: potansiyel },
+    { key:'uretilen', label:'Toplam Üretilen', sub:`Performans Kaybı: −${trNumber(performansKaybi)} adet`, value: agg.uretilen },
+    { key:'saglam', label:'Sağlam Ürün', sub:`Kalite Kaybı: −${trNumber(kaliteKaybi)} adet`, value: agg.saglam }
+  ];
+}
+
+/* ---------- KPI kart yardımcıları ---------- */
+function deltaInfo(cur, prev, unit='puan'){
+  if(prev===null || prev===undefined || isNaN(prev)){
+    return { html: `<span class="kpi-delta flat">Önceki dönem verisi yok</span>` };
+  }
+  const diff = cur - prev;
+  const cls = diff>0.05 ? 'up' : diff<-0.05 ? 'down' : 'flat';
+  const arrow = diff>0.05 ? '▲' : diff<-0.05 ? '▼' : '▬';
+  const label = diff>0.05 ? 'iyileşti' : diff<-0.05 ? 'düştü' : 'değişmedi';
+  return { html: `<span class="kpi-delta ${cls}">${arrow} ${trNumber(Math.abs(diff),1)} ${unit} ${label}</span>` };
+}
+function kpiCard(label, value, deltaHtml){
+  return `<div class="kpi-card">
+    <div class="kpi-label">${label}</div>
+    <div class="kpi-value">${value}</div>
+    ${deltaHtml || ''}
+  </div>`;
+}
+
+/* ---------- render: durum şeridi ---------- */
+function renderStatus(){
+  const el = document.getElementById('statusBanner');
+  if(state.status==='loading'){
+    el.hidden = false;
+    el.className = 'status-banner loading';
+    el.innerHTML = `<span class="spinner"></span> Veri kaynağına bağlanılıyor ve okunuyor…`;
+  } else if(state.status==='error'){
+    el.hidden = false;
+    el.className = 'status-banner error';
+    el.innerHTML = `<span>⚠ Veri okunamadı: ${state.errorMsg}</span><button id="retryBtn">Yeniden Dene</button>`;
+    document.getElementById('retryBtn').addEventListener('click', fetchLiveData);
+  } else {
+    el.hidden = true;
+  }
+}
+
+/* ---------- render: üst bilgi ---------- */
+function renderHeader(){
+  document.getElementById('updatedValue').textContent = state.guncellemeTarihi
+    ? nowStampTR() : '—';
+  const note = document.getElementById('filterNote');
+  if(state.status==='ready'){
+    const dates = [...new Set(state.rows.map(r=>r.tarih))].sort();
+    note.textContent = dates.length ? `Kaynakta ${dates[0]?trDate(dates[0]):''} – ${trDate(dates[dates.length-1])} arası ${state.rows.length} satır var.` : '';
+  } else {
+    note.textContent = '';
+  }
+}
+
+/* ---------- ana render ---------- */
+function renderAll(){
+  renderStatus();
+  renderHeader();
+
+  if(state.status!=='ready'){
+    ['kpiGenel','kpiKayip','kpiVardiya','kpiDetay'].forEach(id=>{
+      document.getElementById(id).innerHTML = `<div class="kpi-empty">Veri yüklendiğinde burada görünecek.</div>`;
+    });
+    document.getElementById('funnelWrap').innerHTML = '';
+    document.getElementById('detailTbody').innerHTML = '';
+    document.getElementById('tableCount').textContent = '';
+    [trendChart,paretoChart,shiftChart].forEach(c=>c && c.destroy());
+    trendChart = paretoChart = shiftChart = null;
+    return;
+  }
+
+  const shiftFiltered = applyShiftFilter(state.rows, state.filters.shift);
+  const curRows = getRangeRows(shiftFiltered, state.filters.range);
+  const prevRows = getPreviousRangeRows(shiftFiltered, state.filters.range);
+  const curAgg = aggregate(curRows);
+  const prevAgg = aggregate(prevRows);
+
+  if(!curRows.length){
+    ['kpiGenel','kpiKayip','kpiVardiya','kpiDetay'].forEach(id=>{
+      document.getElementById(id).innerHTML = `<div class="kpi-empty">Seçilen filtrelerde veri bulunamadı.</div>`;
+    });
+    document.getElementById('funnelWrap').innerHTML = `<div class="empty-state">Bu dönem ve vardiya için kayıt yok.</div>`;
+    document.getElementById('detailTbody').innerHTML = '';
+    document.getElementById('tableCount').textContent = '0 satır gösteriliyor';
+    [trendChart,paretoChart,shiftChart].forEach(c=>c && c.destroy());
+    trendChart = paretoChart = shiftChart = null;
+    return;
+  }
+
+  renderKpiGenel(curAgg, prevAgg);
+  renderTrendChart(curRows, prevRows, state.filters.range);
+
+  renderKpiKayip(curAgg, prevAgg);
+  renderFunnel(curAgg, prevAgg);
+  renderPareto(curRows);
+
+  renderKpiVardiya(curRows, prevRows);
+  renderShiftChart(curRows, prevRows);
+
+  renderKpiDetay(curAgg, curRows);
+  renderDetailTable(curRows);
+}
+
+/* ---------- Genel Bakış ---------- */
+function renderKpiGenel(curAgg, prevAgg){
+  const el = document.getElementById('kpiGenel');
+  el.innerHTML = [
+    kpiCard('OEE (Ortalama)', pct(curAgg.oee), deltaInfo(curAgg.oee, prevAgg && prevAgg.oee).html),
+    kpiCard('Kullanılabilirlik (A)', pct(curAgg.a), deltaInfo(curAgg.a, prevAgg && prevAgg.a).html),
+    kpiCard('Performans (P)', pct(curAgg.p), deltaInfo(curAgg.p, prevAgg && prevAgg.p).html),
+    kpiCard('Kalite (Q)', pct(curAgg.q), deltaInfo(curAgg.q, prevAgg && prevAgg.q).html)
+  ].join('');
+}
+function renderTrendChart(curRows, prevRows, rangeKey){
+  const ctx = document.getElementById('trendChart');
+  const curDaily = dailyAggregate(curRows);
+  const prevDaily = dailyAggregate(prevRows);
+  const showPrev = rangeKey!=='all' && prevDaily.length>0;
+  const maxLen = showPrev ? Math.max(curDaily.length, prevDaily.length) : curDaily.length;
+  const labels = curDaily.map((d,i)=> rangeKey==='all' ? trDate(d.tarih) : `Gün ${i+1}`);
+
+  const datasets = [{
+    label: 'Bu dönem — OEE',
+    data: curDaily.map(d=>Number(d.oee.toFixed(1))),
+    borderColor: '#4C8DFF', backgroundColor: 'rgba(76,141,255,0.12)',
+    borderWidth: 2.5, tension: 0.3, pointRadius: 3, pointBackgroundColor:'#4C8DFF', fill:true
+  }];
+  if(showPrev){
+    datasets.push({
+      label: 'Önceki dönem — OEE',
+      data: prevDaily.map(d=>Number(d.oee.toFixed(1))),
+      borderColor: '#8B95A1', backgroundColor: 'transparent',
+      borderWidth: 2, borderDash:[5,4], tension: 0.3, pointRadius: 2, pointBackgroundColor:'#8B95A1', fill:false
+    });
+  }
+
+  if(trendChart) trendChart.destroy();
+  trendChart = new Chart(ctx, {
+    type:'line',
+    data:{ labels, datasets },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{ mode:'index', intersect:false },
+      scales:{
+        y:{ min:0, max:100, ticks:{ color:'#94A3B3', callback:v=>v+'%' }, grid:{ color:'#2B3645' } },
+        x:{ ticks:{ color:'#94A3B3', maxRotation:0, autoSkip:true }, grid:{ display:false } }
+      },
+      plugins:{ legend:{ display:false } }
+    }
+  });
+}
+
+/* ---------- Kayıp Analizi ---------- */
+function renderKpiKayip(curAgg, prevAgg){
+  const el = document.getElementById('kpiKayip');
+  const toplamDurus = curAgg.durus;
+  const prevDurus = prevAgg ? prevAgg.durus : null;
+  el.innerHTML = [
+    kpiCard('Toplam Duruş Süresi', trNumber(toplamDurus)+' dk', deltaInfo(toplamDurus, prevDurus, 'dk').html),
+    kpiCard('Hatalı Ürün', trNumber(curAgg.hatali)+' adet', deltaInfo(curAgg.hatali, prevAgg?prevAgg.hatali:null,'adet').html),
+    kpiCard('Toplam Üretilen', trNumber(curAgg.uretilen)+' adet', ''),
+    kpiCard('Sağlam Ürün', trNumber(curAgg.saglam)+' adet', '')
+  ].join('');
+}
+function renderFunnel(curAgg, prevAgg){
+  const stages = funnelStages(curAgg);
+  const prevStages = prevAgg ? funnelStages(prevAgg) : null;
+  const max = stages[0].value || 1;
+  const wrap = document.getElementById('funnelWrap');
+  wrap.innerHTML = stages.map((s,i)=>{
+    const pctW = Math.max(2, (s.value/max)*100);
+    const prevPctW = prevStages ? Math.max(0,(prevStages[i].value/max)*100) : null;
+    return `
+      <div class="funnel-stage">
+        <div class="funnel-stage-label">
+          <span>${s.label}</span>
+          <strong>${trNumber(s.value)} adet</strong>
+        </div>
+        <div class="funnel-track">
+          ${prevPctW!==null ? `<div class="funnel-bar-ref" style="width:${prevPctW}%"></div>` : ''}
+          <div class="funnel-bar-cur" style="width:${pctW}%"></div>
+        </div>
+        ${i>0 ? `<div class="funnel-loss">${s.sub}</div>` : ''}
+      </div>`;
+  }).join('');
+}
+function renderPareto(curRows){
+  const ctx = document.getElementById('paretoChart');
+  const data = downtimeAggregate(curRows);
+  if(paretoChart) paretoChart.destroy();
+  if(!data.length){
+    paretoChart = null;
+    ctx.getContext('2d').clearRect(0,0,ctx.width,ctx.height);
+    return;
+  }
+  paretoChart = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels: data.map(d=>d.neden),
+      datasets:[{ label:'Duruş (dk)', data:data.map(d=>d.dakika), backgroundColor:'#4C8DFF', borderRadius:3 }]
+    },
+    options:{
+      indexAxis:'y',
+      responsive:true, maintainAspectRatio:false,
+      scales:{
+        x:{ ticks:{ color:'#94A3B3' }, grid:{ color:'#2B3645' } },
+        y:{ ticks:{ color:'#E8EDF3', font:{ size:11.5 } }, grid:{ display:false } }
+      },
+      plugins:{ legend:{ display:false } }
+    }
+  });
+}
+
+/* ---------- Vardiya Karşılaştırması ---------- */
+function renderKpiVardiya(curRows, prevRows){
+  const el = document.getElementById('kpiVardiya');
+  const cur = shiftAggregate(curRows).filter(s=>s.agg);
+  if(!cur.length){ el.innerHTML = `<div class="kpi-empty">Veri yok.</div>`; return; }
+  const best = cur.reduce((a,b)=> (b.agg.oee>a.agg.oee?b:a));
+  const worst = cur.reduce((a,b)=> (b.agg.oee<a.agg.oee?b:a));
+  const ortOee = aggregate(curRows).oee;
+  el.innerHTML = [
+    kpiCard('En İyi Vardiya', `Vardiya ${best.vardiya}`, `<span class="kpi-delta up">▲ ${pct(best.agg.oee)} OEE</span>`),
+    kpiCard('En Düşük Vardiya', `Vardiya ${worst.vardiya}`, `<span class="kpi-delta down">▼ ${pct(worst.agg.oee)} OEE</span>`),
+    kpiCard('Genel Ortalama OEE', pct(ortOee), ''),
+    kpiCard('Değerlendirilen Vardiya', cur.length+' / 3', '')
+  ].join('');
+}
+function renderShiftChart(curRows, prevRows){
+  const ctx = document.getElementById('shiftChart');
+  const cur = shiftAggregate(curRows);
+  const prev = shiftAggregate(prevRows);
+  const hasPrev = prevRows.length>0;
+  const labels = ['Vardiya 1','Vardiya 2','Vardiya 3'];
+
+  const datasets = [{
+    label:'Bu dönem — OEE',
+    data: cur.map(s=> s.agg ? Number(s.agg.oee.toFixed(1)) : null),
+    backgroundColor:'#4C8DFF', borderRadius:3
+  }];
+  if(hasPrev){
+    datasets.push({
+      label:'Önceki dönem — OEE',
+      data: prev.map(s=> s.agg ? Number(s.agg.oee.toFixed(1)) : null),
+      backgroundColor:'#8B95A1', borderRadius:3
+    });
+  }
+
+  if(shiftChart) shiftChart.destroy();
+  shiftChart = new Chart(ctx, {
+    type:'bar',
+    data:{ labels, datasets },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      scales:{
+        y:{ min:0, max:100, ticks:{ color:'#94A3B3', callback:v=>v+'%' }, grid:{ color:'#2B3645' } },
+        x:{ ticks:{ color:'#94A3B3' }, grid:{ display:false } }
+      },
+      plugins:{ legend:{ labels:{ color:'#94A3B3' } } }
+    }
+  });
+}
+
+/* ---------- Detay Tablo ---------- */
+function renderKpiDetay(curAgg, curRows){
+  const el = document.getElementById('kpiDetay');
+  const altHedef = curRows.filter(r=>r.oee<75).length;
+  el.innerHTML = [
+    kpiCard('Gösterilen Satır', curRows.length, ''),
+    kpiCard('Ortalama OEE', pct(curAgg.oee), ''),
+    kpiCard('Hedef Altı Kayıt (OEE < %75)', altHedef, ''),
+    kpiCard('Toplam Hatalı Ürün', trNumber(curAgg.hatali)+' adet', '')
+  ].join('');
+}
+function statusTag(oee){
+  if(oee>=90) return `<span class="tag tag-good">● Hedef Üstü</span>`;
+  if(oee>=75) return `<span class="tag tag-warn">● Hedef Aralığında</span>`;
+  return `<span class="tag tag-bad">● Hedef Altı</span>`;
+}
+function renderDetailTable(curRows){
+  const tbody = document.getElementById('detailTbody');
+  const sorted = [...curRows].sort((a,b)=> a.tarih===b.tarih ? a.vardiya-b.vardiya : (a.tarih<b.tarih?1:-1));
+  if(!sorted.length){
+    tbody.innerHTML = `<tr><td colspan="9" class="empty-state">Veri yok.</td></tr>`;
+  } else {
+    tbody.innerHTML = sorted.map(r=>`
+      <tr>
+        <td>${trDate(r.tarih)}</td>
+        <td>V${r.vardiya}</td>
+        <td>S1 Montaj Hattı</td>
+        <td>${r.neden}</td>
+        <td>${pct(r.a)}</td>
+        <td>${pct(r.p)}</td>
+        <td>${pct(r.q)}</td>
+        <td>${pct(r.oee)}</td>
+        <td>${statusTag(r.oee)}</td>
+      </tr>`).join('');
+  }
+  document.getElementById('tableCount').textContent = `${sorted.length} satır gösteriliyor`;
+}
+
+/* ---------- olay dinleyiciler ---------- */
+document.getElementById('tabs').addEventListener('click', (e)=>{
+  const btn = e.target.closest('.tab');
+  if(!btn) return;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('screen-'+btn.dataset.tab).classList.add('active');
+  state.activeTab = btn.dataset.tab;
+});
+document.getElementById('rangeSelect').addEventListener('change', (e)=>{
+  state.filters.range = e.target.value;
+  renderAll();
+});
+document.getElementById('shiftSelect').addEventListener('change', (e)=>{
+  state.filters.shift = e.target.value;
+  renderAll();
+});
+document.getElementById('refreshBtn').addEventListener('click', fetchLiveData);
+
+/* ---------- başlat ---------- */
+fetchLiveData();
+</script>
+</body>
+</html>

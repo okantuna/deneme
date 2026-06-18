@@ -1,0 +1,12 @@
+BU KLASÖRE NE KOYACAKSINIZ
+==========================
+
+Kırpılmamış (olduğu gibi) ekran görüntüleri:
+
+- Canlı veri bağlantısının kurulu olduğu ekran
+  (Claude'da Connector, Gemini'de Google Drive bağlantısı)
+- Aracın "talimat" alanı (kalıcı kurallarınız yüklü görünüyor)
+- Standardın uygulandığı pano görüntüsü
+- Bağlamı sade tuttuğunuzu gösteren önce/sonra görüntü (varsa)
+
+ÖNEMLİ: Görüntüleri kırpmayın/düzenlemeyin. Aksi halde kanıt sayılmaz.

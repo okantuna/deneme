@@ -1,0 +1,15 @@
+TUR A — DONANIMSIZ (boş sohbet)
+================================
+
+Boş bir sohbet açın. Hiçbir kural, standart veya veri bağlantısı kurmadan,
+tek bir istekle panoyu üretmesini isteyin.
+
+Kullandığınız tek istek (prompt):
+  ...
+
+Konuşmanın tamamı (baştan sona, olduğu gibi):
+  ...
+
+Kısa gözleminiz:
+- Tasarım her seferinde aynı mı, yoksa değişiyor mu?
+- Veri panonun içine gömüldü mü?

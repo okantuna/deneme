@@ -1,0 +1,11 @@
+BU KLASÖRE NE KOYACAKSINIZ
+==========================
+
+Asistanın ürettiği pano (dashboard) çıktısını buraya koyun:
+- Tek bir HTML dosyası (önerilir), VEYA
+- Google Sites bağlantısı (linki README dosyanıza yazın).
+
+Panonun uyması gerekenler (ödev Bölüm 3.3):
+- Veri panonun içine gömülü olmasın.
+- En az 4 ekran olsun.
+- Veri yoksa/hatalıysa anlamlı mesaj göstersin.

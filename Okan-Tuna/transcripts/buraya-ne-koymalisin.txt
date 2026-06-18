@@ -1,0 +1,14 @@
+BU KLASÖRE NE KOYACAKSINIZ
+==========================
+
+Asistanla yaptığınız konuşmaların KAYITLARI. Üç dosya hazır; doldurun:
+
+- tur-A.txt   : Donanımsız tur (boş sohbet, kural/standart yok)
+- tur-B.txt   : Donanımlı tur (kurallar + standart + canlı veri kurulu)
+- dogrulama.txt : 6 doğrulama denemesinin kayıtları
+
+Konuşmayı nasıl alırsınız?
+- Aracın "paylaş" veya "dışa aktar" özelliğini kullanın, ya da
+- Konuşmayı baştan sona kopyalayıp ilgili dosyaya yapıştırın.
+
+ÖNEMLİ: Konuşmayı KISALTMAYIN, düzenlemeyin. Baştan sona, olduğu gibi olmalı.

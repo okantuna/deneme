@@ -1,0 +1,14 @@
+BU KLASÖRE NE KOYACAKSINIZ
+==========================
+
+Senaryonuz için ürettiğiniz YAPAY (sentetik) veri dosyası.
+- Dosya adı: veri.csv veya veri.json
+- En az 150-300 satır; tarih/birim/ölçüler tutarlı olsun.
+
+Canlı bağlantı için: Aynı veriyi bir Google Sheet'e de yükleyin ve aracınızın
+(Claude'da "Connector", Gemini'de "Google Drive" bağlantısı) erişimine açın.
+Böylece veriyi sohbete kopyala-yapıştır etmeden, canlı okutabilirsiniz.
+
+ÖNEMLİ: Gerçek/gizli VALEO verisi KULLANMAYIN. Veri tamamen yapay olmalı.
+
+Not: S1 (OEE) ve CRM senaryosu için başlangıç verisi eğitmende mevcut.

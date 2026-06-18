@@ -1,0 +1,19 @@
+TUR B — DONANIMLI
+=================
+
+Kurallarınız + üretim standardınız + canlı veri bağlantınız kurulu.
+Aynı panoyu yeniden ürettirin.
+
+Kurulum (kısaca):
+- Project/Gem oluşturuldu mu:
+- Kalıcı kurallar talimat alanına yapıştırıldı mı:
+- Üretim standardı bilgi olarak yüklendi mi:
+- Canlı veri (Sheet) bağlandı mı:
+
+Konuşmanın tamamı (baştan sona, olduğu gibi):
+  ...
+
+Şunların konuşmada göründüğü yeri işaretleyin:
+- Standart uygulandı (renk/düzen/grafik):
+- Bir kural çıktıyı düzeltti (örn. "veriyi göm" isteği reddedildi):
+- Veri canlı okundu (gömülü değil):

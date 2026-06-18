@@ -1,0 +1,28 @@
+ÜRETİM STANDARDI  (aracınıza "bilgi dosyası" olarak yükleyin)
+=============================================================
+
+Bu standart, panonun her üretimde aynı görünmesini sağlar.
+(2. günde işlenen tasarım ilkelerinden derlenmiştir.)
+
+RENKLER
+- Mavi = bu dönem, gri = önceki dönem / referans.
+- Dekoratif gölge veya 3 boyutlu efekt kullanma.
+
+HER EKRANIN DÜZENİ
+- Üstte başlık ve "son güncelleme" tarihi
+- Filtre alanı
+- KPI kartları (en önemli sayılar)
+- Altında grafik alanı
+
+HANGİ VERİDE HANGİ GRAFİK
+- Zamana göre değişim  -> çizgi grafik
+- Kategorilerin kıyası  -> sütun/bar grafik
+- Aşamadan aşamaya azalma -> huni (funnel)
+- Pasta grafiği yalnızca 2-3 parça için kullan.
+- En önemli bilgi tek ekranda, kaydırmadan görünsün.
+
+ÇIKTI
+- En az 4 ekran olsun.
+- Veri panonun içine gömülü olmasın; ayrı dosyadan/kaynaktan okunsun.
+
+(Buraya senaryonuzun metrik tanımlarını ekleyin.)

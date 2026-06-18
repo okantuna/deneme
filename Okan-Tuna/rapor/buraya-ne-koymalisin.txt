@@ -1,0 +1,18 @@
+BU KLASÖRE NE KOYACAKSINIZ
+==========================
+
+Raporunuzu PDF olarak buraya koyun: rapor.pdf
+
+Raporda şu başlıklar olsun (ödev Bölüm 8):
+
+1. Kapak: Ad-Soyad, ekip, kullandığınız araç (Gemini/Claude), senaryo
+2. Senaryo ve persona: pano kimin, hangi karar için, hangi 3 soruyu cevaplıyor
+3. Mimari ŞEMASI (ZORUNLU): Bağlam, kurallar, üretim standardı ve canlı veri
+   nasıl birlikte çalışıyor — basit bir kutu-ok şeması yeterli
+4. Bağlamı nasıl sade tuttunuz ve bu neden önemli
+5. Tur A ile Tur B karşılaştırması
+6. En etkili 3-5 isteğiniz (prompt), tam metniyle
+7. Karşılaştığınız en az 2 zorluk ve nasıl çözdüğünüz
+8. Kendinize notunuz: neyi iyi yaptınız, neyi geliştirirsiniz
+
+İpucu: Çıktıyı anlatmaktan çok, NEDEN o kararları aldığınızı yazın.
