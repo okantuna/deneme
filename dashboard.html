@@ -151,10 +151,10 @@ thead th {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-thead th:first-child  { text-align: center; width: 64px; }
-thead th:nth-child(2) { text-align: center; width: 72px; }
-thead th:nth-child(3) { text-align: center; width: 62px; }
-thead th:nth-child(4) { text-align: left; padding-left: 16px; width: 210px; }
+thead th:first-child  { text-align: center; width: 56px; }
+thead th:nth-child(2) { text-align: center; width: 64px; }
+thead th:nth-child(3) { text-align: center; width: 56px; }
+thead th:nth-child(4) { text-align: left; padding-left: 16px; width: 260px; }
 thead th:nth-child(n+5) { width: auto; }
 
 .code-input {
@@ -240,7 +240,7 @@ tr.project-row.expanded .project-row-inner { background: #fafaf9; }
 }
 tr.project-row.expanded .toggle-icon { background: #1c1917; color: #fff; border-color: #1c1917; }
 
-.project-name-text { font-weight: 500; color: #1c1917; flex: 1; }
+.project-name-text { font-weight: 500; color: #1c1917; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .project-link-btn {
   font-size: 11px; color: #a8a29e;
   opacity: 0; transition: opacity .12s;
@@ -251,19 +251,19 @@ tr.project-row.expanded .toggle-icon { background: #1c1917; color: #fff; border-
 tr.project-row:hover .project-link-btn { opacity: 1; }
 .project-link-btn.has-link { color: #2563eb; border-color: #bfdbfe; background: #eff6ff; opacity: 1; }
 
-.ms-cell { text-align: center; padding: 10px 8px; border-bottom: 1px solid #f5f5f4; }
+.ms-cell { text-align: center; padding: 10px 4px; border-bottom: 1px solid #f5f5f4; }
 
 /* Milestone chip */
 .ms-chip {
   cursor: pointer;
   border-radius: 5px;
-  padding: 3px 8px;
+  padding: 3px 6px;
   display: inline-block;
-  min-width: 52px;
   font-weight: 500;
   font-size: 11.5px;
   border: 1px solid transparent;
   transition: filter .12s;
+  white-space: nowrap;
 }
 .ms-chip:hover { filter: brightness(.93); }
 .s-done    { background:#f0fdf4; color:#15803d; border-color:#bbf7d0; }
