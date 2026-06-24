@@ -125,10 +125,11 @@ header h1 { font-size: 14px; font-weight: 600; color: #1c1917; }
 .table-wrap { padding: 16px 24px; }
 
 table {
-  width: auto;
+  width: 100%;
+  table-layout: fixed;
   border-collapse: separate;
   border-spacing: 0;
-  min-width: 880px;
+  min-width: 960px;
   background: #fff;
   border: 1px solid #e7e5e4;
   border-radius: 10px;
@@ -142,16 +143,19 @@ thead th {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  padding: 9px 12px;
+  padding: 9px 6px;
   text-align: center;
   border-bottom: 1px solid #e7e5e4;
   position: sticky; top: 0; z-index: 20;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-thead th:first-child { text-align: center; width: 72px; min-width: 72px; }
-thead th:nth-child(2) { text-align: center; width: 80px; min-width: 80px; }
-thead th:nth-child(3) { text-align: center; width: 72px; min-width: 72px; }
-thead th:nth-child(4) { text-align: left; padding-left: 16px; min-width: 200px; width: 200px; max-width: 200px; }
+thead th:first-child  { text-align: center; width: 64px; }
+thead th:nth-child(2) { text-align: center; width: 72px; }
+thead th:nth-child(3) { text-align: center; width: 62px; }
+thead th:nth-child(4) { text-align: left; padding-left: 16px; width: 210px; }
+thead th:nth-child(n+5) { width: auto; }
 
 .code-input {
   width: 64px;
