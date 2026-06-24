@@ -129,7 +129,7 @@ table {
   table-layout: fixed;
   border-collapse: separate;
   border-spacing: 0;
-  min-width: 960px;
+  min-width: 1292px;
   background: #fff;
   border: 1px solid #e7e5e4;
   border-radius: 10px;
@@ -152,10 +152,10 @@ thead th {
   text-overflow: ellipsis;
 }
 thead th:first-child  { text-align: center; width: 60px; }
-thead th:nth-child(2) { text-align: center; width: 70px; }
+thead th:nth-child(2) { text-align: center; width: 72px; }
 thead th:nth-child(3) { text-align: center; width: 60px; }
-thead th:nth-child(4) { text-align: left; padding-left: 16px; width: 240px; }
-thead th:nth-child(n+5) { width: auto; }
+thead th:nth-child(4) { text-align: left; padding-left: 16px; width: 300px; }
+thead th:nth-child(n+5) { width: 100px; }
 
 .code-input {
   width: 64px;
@@ -622,7 +622,7 @@ function buildProjectRow(p, milestones, currentWeek, expanded) {
     <td>
       <div class="project-row-inner">
         <span class="toggle-icon">${expanded ? "−" : "+"}</span>
-        <span class="project-name-text">${safeName}</span>
+        <span class="project-name-text" title="${enc(p.name)}">${safeName}</span>
         <button class="project-link-btn${linkClass}" data-project="${enc(p.name)}" data-url="${enc(p.url||'')}">${linkLabel}</button>
       </div>
     </td>`;
