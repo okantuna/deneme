@@ -148,8 +148,10 @@ thead th {
   position: sticky; top: 0; z-index: 20;
   white-space: nowrap;
 }
-thead th:first-child { text-align: center; width: 72px; min-width: 72px; padding-left: 12px; }
-thead th:nth-child(2) { text-align: left; padding-left: 16px; min-width: 220px; }
+thead th:first-child { text-align: center; width: 72px; min-width: 72px; }
+thead th:nth-child(2) { text-align: center; width: 80px; min-width: 80px; }
+thead th:nth-child(3) { text-align: center; width: 72px; min-width: 72px; }
+thead th:nth-child(4) { text-align: left; padding-left: 16px; min-width: 220px; }
 
 .code-input {
   width: 64px;
@@ -167,6 +169,45 @@ thead th:nth-child(2) { text-align: left; padding-left: 16px; min-width: 220px; 
 }
 .code-input:hover  { border-color: #e7e5e4; background: #fff; }
 .code-input:focus  { border-color: #a8a29e; background: #fff; outline: none; box-shadow: 0 0 0 2px rgba(168,162,158,.15); }
+
+.difficulty-input {
+  width: 68px;
+  text-align: center;
+  border: 1px solid transparent;
+  background: transparent;
+  font-size: 11.5px;
+  font-weight: 500;
+  padding: 3px 5px;
+  border-radius: 4px;
+  font-family: inherit;
+  color: #57534e;
+  cursor: text;
+  transition: border-color .12s, background .12s;
+}
+.difficulty-input:hover { border-color: #e7e5e4; background: #fff; }
+.difficulty-input:focus { border-color: #a8a29e; background: #fff; outline: none; box-shadow: 0 0 0 2px rgba(168,162,158,.15); }
+
+.type-select {
+  width: 62px;
+  border: 1px solid transparent;
+  background: transparent;
+  font-size: 11.5px;
+  font-weight: 500;
+  padding: 3px 4px;
+  border-radius: 4px;
+  font-family: inherit;
+  color: #57534e;
+  cursor: pointer;
+  transition: border-color .12s, background .12s;
+  appearance: none;
+  text-align: center;
+}
+.type-select:hover { border-color: #e7e5e4; background: #fff; }
+.type-select:focus { border-color: #a8a29e; background: #fff; outline: none; }
+.type-select.has-val { color: #1c1917; }
+.type-p0  { background: #fef2f2 !important; color: #b91c1c !important; border-color: #fecaca !important; }
+.type-p1  { background: #fffbeb !important; color: #b45309 !important; border-color: #fde68a !important; }
+.type-p10 { background: #eff6ff !important; color: #1d4ed8 !important; border-color: #bfdbfe !important; }
 
 /* Project row */
 tr.project-row { cursor: pointer; }
@@ -529,7 +570,7 @@ function renderTable() {
   const head = document.getElementById("tableHead");
   const body = document.getElementById("tableBody");
 
-  let th = `<tr><th>Kod</th><th>Proje</th>`;
+  let th = `<tr><th>Kod</th><th>Zorluk</th><th>Tip</th><th>Proje</th>`;
   milestones.forEach(m => th += `<th>${m}</th>`);
   th += `</tr>`;
   head.innerHTML = th;
@@ -554,10 +595,24 @@ function buildProjectRow(p, milestones, currentWeek, expanded) {
   const linkLabel = p.url ? "↗ Technic RFQ" : "+ Technic RFQ";
   const expClass  = expanded ? " expanded" : "";
 
-  const code = (typeof localStorage !== 'undefined' ? localStorage.getItem('pcode_' + p.name) : '') || '';
+  const code  = (typeof localStorage !== 'undefined' ? localStorage.getItem('pcode_' + p.name) : '') || '';
+  const diff  = (typeof localStorage !== 'undefined' ? localStorage.getItem('pdiff_' + p.name) : '') || '';
+  const ptype = (typeof localStorage !== 'undefined' ? localStorage.getItem('ptype_' + p.name) : '') || '';
+  const typeClass = ptype === 'P0' ? 'type-p0' : ptype === 'P1' ? 'type-p1' : ptype === 'P10' ? 'type-p10' : '';
   let row = `<tr class="project-row${expClass}" data-project="${enc(p.name)}">
     <td class="ms-cell" style="padding:6px 8px">
       <input class="code-input" value="${enc(code)}" placeholder="—" data-project="${enc(p.name)}" onchange="saveProjectCode(this)" onclick="event.stopPropagation()" title="Proje kodu">
+    </td>
+    <td class="ms-cell" style="padding:6px 8px">
+      <input class="difficulty-input" value="${enc(diff)}" placeholder="—" data-project="${enc(p.name)}" onchange="saveDifficulty(this)" onclick="event.stopPropagation()" title="Zorluk derecesi">
+    </td>
+    <td class="ms-cell" style="padding:6px 8px">
+      <select class="type-select ${typeClass}" data-project="${enc(p.name)}" onchange="saveProjectType(this)" onclick="event.stopPropagation()" title="Proje tipi">
+        <option value="">—</option>
+        <option value="P0" ${ptype==='P0'?'selected':''}>P0</option>
+        <option value="P1" ${ptype==='P1'?'selected':''}>P1</option>
+        <option value="P10" ${ptype==='P10'?'selected':''}>P10</option>
+      </select>
     </td>
     <td>
       <div class="project-row-inner">
@@ -874,9 +929,17 @@ function saveLinkModal() {
     .updateProjectLink(project, url);
 }
 
-// ── Project code (localStorage) ────────────────────────────────────────────
+// ── Project meta columns (localStorage) ────────────────────────────────────
 function saveProjectCode(input) {
   localStorage.setItem('pcode_' + input.dataset.project, input.value.trim());
+}
+function saveDifficulty(input) {
+  localStorage.setItem('pdiff_' + input.dataset.project, input.value.trim());
+}
+function saveProjectType(select) {
+  const val = select.value;
+  localStorage.setItem('ptype_' + select.dataset.project, val);
+  select.className = 'type-select' + (val === 'P0' ? ' type-p0' : val === 'P1' ? ' type-p1' : val === 'P10' ? ' type-p10' : '');
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────
